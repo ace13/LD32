@@ -4,6 +4,7 @@ set(HEADERS
 	Game/Camera.hpp
 	Game/ScriptMan.hpp
 	Game/ScriptObj.hpp
+	Game/Statistics.hpp
 
 	Math/Common.hpp
 	Math/Common.inl
@@ -24,6 +25,7 @@ set(SOURCES
 	Game/Camera.cpp
 	Game/ScriptMan.cpp
 	Game/ScriptObj.cpp
+	Game/Statistics.cpp
 
 	Math/Common.cpp
 	Math/Rect.cpp

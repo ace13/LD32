@@ -8,6 +8,14 @@ namespace Math
 
 	struct Rect : sf::FloatRect
 	{
+		Rect();
+		Rect(float top, float left, float width, float height);
+		Rect(const Vec2& pos, const Vec2& size);
+		template<typename T>
+		Rect(const sf::Rect<T>&);
+		Rect(const Rect&) = default;
+		~Rect() = default;
+
 		static Rect FromPoints(const Vec2& p1, const Vec2& p2);
 
 		Vec2 getCenter() const;
@@ -20,3 +28,6 @@ namespace Math
 	};
 
 }
+
+template<typename T>
+Math::Rect::Rect(const sf::Rect<T>& rect) : sf::FloatRect(rect) { }

@@ -56,8 +56,11 @@ endif()
 
 find_package(Angelscript REQUIRED)
 find_package(AngelscriptJIT)
+add_subdirectory(Externals/Kunlaboro)
 
 include_directories(
+	Sources/
+	Externals/Kunlaboro/include
 	${Angelscript_INCLUDE_DIR}
 	${AngelscriptJIT_INCLUDE_DIR}
 	${SFML_INCLUDE_DIR}

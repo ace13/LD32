@@ -9,6 +9,9 @@ namespace Math
 
 		Spinor();
 		Spinor(float ang);
+		Spinor(float real, float complex);
+		Spinor(const Spinor&) = default;
+		~Spinor() = default;
 
 		bool operator==(const Spinor& rhs);
 
@@ -32,7 +35,7 @@ namespace Math
 		void setAngle(float ang);
 		void setLength(float len);
 
-		float Real, Complex;
+		float real, complex;
 	};
 
 }

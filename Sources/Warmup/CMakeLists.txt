@@ -2,13 +2,14 @@ set(HEADERS
 
 )
 set(SOURCES
-	
+
 )
 
 add_executable(LD32_Warmup main.cpp ${HEADERS} ${SOURCES})
 target_link_libraries(LD32_Warmup
 	AS_SFML
 	LD32_Core
+	Kunlaboro
 
 	${Angelscript_LIBRARIES}
 	${Fontconfig_LIBRARIES}
