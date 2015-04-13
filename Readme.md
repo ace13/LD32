@@ -6,21 +6,27 @@ Here's where my coming Ludum Dare #32 entry will be, at the moment I'm just work
 Dependencies
 ------------
 
-Angelscript 2.30.0
-(AngelscripJIT - latest git)
-SFML - 2.2
+- Angelscript 2.30.0
+- (AngelscripJIT - latest git)
+- SFML - 2.2
 
 Building
 -----
 
+Note that you need to update submodules before you can build;
+
+`git submodule update --init`
+
 On Linux:
 
-```
-mkdir build
-cd build
-cmake ..
-make
-```
+    $ mkdir build
+    $ cd build
+    $ cmake ..
+    $ make
+
+On Windows:
+
+Create your build directory, set up using cmake, compile with Visual Studio 2012+
 
 Running
 -------
