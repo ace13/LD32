@@ -1,0 +1,4 @@
+[submodule "Kunlaboro"]
+	path = Externals/Kunlaboro
+	url = git://github.com/ace13/Kunlaboro.git
+	branch = rewrite-messagepassing
