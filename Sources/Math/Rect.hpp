@@ -6,8 +6,9 @@
 namespace Math
 {
 
-	struct Rect : sf::FloatRect
+	class Rect : public sf::FloatRect
 	{
+	public:
 		Rect();
 		Rect(float top, float left, float width, float height);
 		Rect(const Vec2& pos, const Vec2& size);

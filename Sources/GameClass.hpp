@@ -25,6 +25,6 @@ private:
 	int mTickRate;
 	bool mRunning;
 
-	Kunlaboro::EntitySystem mES;
+	Kunlaboro::EntitySystem& mES;
 	sf::RenderWindow mRenderWindow;
 };

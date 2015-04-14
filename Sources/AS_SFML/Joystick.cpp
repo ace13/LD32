@@ -38,12 +38,7 @@ struct JoystickImpl
 		return sf::Joystick::ButtonCount;
 	}
 
-#ifndef AS_SUPPORT_VALRET
-	void getIdent(asIScriptGeneric* gen) const
-	{
-		new (gen->GetAddressOfReturnLocation()) sf::Joystick::Identification(sf::Joystick::getIdentification(ID));
-	}
-#else
+#ifdef AS_SUPPORT_VALRET
 	sf::Joystick::Identification getIdent() const
 	{
 		return sf::Joystick::getIdentification(ID);
@@ -55,6 +50,14 @@ namespace
 {
 	void create_joystick(void* mem, unsigned int id) { new (mem)JoystickImpl(id); }
 	void destroy_joystick(JoystickImpl* mem) { mem->~JoystickImpl(); }
+
+#ifndef AS_SUPPORT_VALRET
+	void getIdent(asIScriptGeneric* gen)
+	{
+		JoystickImpl* obj = reinterpret_cast<JoystickImpl*>(gen->GetObject());
+		new (gen->GetAddressOfReturnLocation()) sf::Joystick::Identification(sf::Joystick::getIdentification(obj->ID));
+	}
+#endif
 }
 
 void AS_SFML::priv::joystick(asIScriptEngine* eng)
@@ -91,14 +94,14 @@ void AS_SFML::priv::joystick(asIScriptEngine* eng)
 	r = eng->RegisterObjectMethod("Joystick", "uint get_AxisCount() const", asMETHOD(JoystickImpl, axisCount), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Joystick", "uint get_ButtonCount() const", asMETHOD(JoystickImpl, buttonCount), asCALL_THISCALL); asAssert(r);
 
-	r = eng->RegisterObjectMethod("Joystick", "bool HasAxis(Joystick::Axis axis) const", asMETHOD(JoystickImpl, hasAxis), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Joystick", "bool HasAxis(sf::Joystick::Axis axis) const", asMETHOD(JoystickImpl, hasAxis), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Joystick", "bool IsPressed(uint button) const", asMETHOD(JoystickImpl, isPressed), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod("Joystick", "float AxisPosition(Joystick::Axis axis) const", asMETHOD(JoystickImpl, axisPos), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Joystick", "float AxisPosition(sf::Joystick::Axis axis) const", asMETHOD(JoystickImpl, axisPos), asCALL_THISCALL); asAssert(r);
 
 #ifndef AS_SUPPORT_VALRET
-	r = eng->RegisterObjectMethod("Joystick", "Joystick::Identification get_Identification() const", asMETHOD(JoystickImpl, getIdent), asCALL_GENERIC); asAssert(r);
+	r = eng->RegisterObjectMethod("Joystick", "sf::Joystick::Identification get_Identification() const", asFUNCTION(getIdent), asCALL_GENERIC); asAssert(r);
 #else
-	r = eng->RegisterObjectMethod("Joystick", "Joystick::Identification get_Identification() const", asMETHOD(JoystickImpl, getIdent), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Joystick", "sf::Joystick::Identification get_Identification() const", asMETHOD(JoystickImpl, getIdent), asCALL_THISCALL); asAssert(r);
 #endif
 }
 

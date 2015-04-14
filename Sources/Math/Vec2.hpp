@@ -5,8 +5,9 @@
 namespace Math
 {
 
-	struct Vec2 : sf::Vector2f
+	class Vec2 : public sf::Vector2f
 	{
+	public:
 		Vec2();
 		Vec2(float x, float y);
 		template<typename T>

@@ -1,6 +1,8 @@
 #include "ScriptManager.hpp"
 #include "ScriptExtensions.hpp"
 
+#include <scripthelper/scripthelper.h>
+
 using namespace Game;
 
 namespace
@@ -8,6 +10,16 @@ namespace
 	int include(const char *include, const char *from, CScriptBuilder *builder, void *userParam)
 	{
 		return 0;
+	}
+
+	void MessageCallback(const asSMessageInfo *msg, void *param)
+	{
+		const char *type = "ERR ";
+		if (msg->type == asMSGTYPE_WARNING)
+			type = "WARN";
+		else if (msg->type == asMSGTYPE_INFORMATION)
+			type = "INFO";
+		printf("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
 	}
 }
 
@@ -24,8 +36,11 @@ ScriptManager::ScriptManager() :
 	mEngine(asCreateScriptEngine(ANGELSCRIPT_VERSION)),
 	mWatcher("Scripts")
 {
+	mEngine->SetMessageCallback(asFUNCTION(MessageCallback), nullptr, asCALL_CDECL);
+
 	addGeneralScriptExtensions(mEngine);
 	AS_SFML::addSFMLExtensions(mEngine);
+
 	mBuilder.SetIncludeCallback(include, nullptr);
 }
 ScriptManager::~ScriptManager()

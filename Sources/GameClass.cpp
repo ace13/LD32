@@ -5,15 +5,25 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Sleep.hpp>
 
+namespace
+{
+	GameClass* sSingleton;
+}
+
 void GameClass::RegisterComponents(Kunlaboro::EntitySystem& es)
 {
 	es.registerComponent<Game::Statistics>("Game.Statistics");
 }
 
+GameClass& GameClass::Singleton()
+{
+	return *sSingleton;
+}
+
 GameClass::GameClass(Kunlaboro::EntitySystem& es) :
 	mTickRate(66), mRunning(false), mES(es)
 {
-
+	sSingleton = this;
 }
 
 void GameClass::init()
@@ -73,4 +83,22 @@ int GameClass::run()
 	}
 
 	return 0;
+}
+
+int GameClass::getTickRate() const
+{
+	return mTickRate;
+}
+void GameClass::setTickRate(int rate)
+{
+	mTickRate = rate;
+}
+
+sf::RenderTarget& GameClass::getTarget()
+{
+	return mRenderWindow;
+}
+sf::RenderWindow& GameClass::getWindow()
+{
+	return mRenderWindow;
 }

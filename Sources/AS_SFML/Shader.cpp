@@ -27,7 +27,7 @@ void AS_SFML::priv::shader(asIScriptEngine* eng)
 	r = eng->RegisterObjectMethod("Shader", "void Set(::string&in name, float x, float y)", asMETHODPR(sf::Shader, setParameter, (const std::string&, float, float), void), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Shader", "void Set(::string&in name, float x, float y, float z)", asMETHODPR(sf::Shader, setParameter, (const std::string&, float, float, float), void), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Shader", "void Set(::string&in name, float x, float y, float z, float w)", asMETHODPR(sf::Shader, setParameter, (const std::string&, float, float, float, float), void), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod("Shader", "void Set(::string&in name, ::Vec2& vec)", asMETHODPR(sf::Shader, setParameter, (const std::string&, const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Shader", "void Set(::string&in name, ::Vec2&in vec)", asMETHODPR(sf::Shader, setParameter, (const std::string&, const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Shader", "void Set(::string&in name, Color&in color)", asMETHODPR(sf::Shader, setParameter, (const std::string&, const sf::Color&), void), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Shader", "void Set(::string&in name, Texture@ color)", asFUNCTION(shader_setTexture), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectMethod("Shader", "void SetCurTexture(::string&in name)", asFUNCTION(shader_setCurTexture), asCALL_CDECL_OBJFIRST); asAssert(r);

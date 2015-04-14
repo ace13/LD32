@@ -6,13 +6,13 @@ void AS_SFML::priv::music(asIScriptEngine* eng)
 	int r;
 
 	audio_common("Music", eng);
-	r = eng->RegisterObjectMethod("Music", "::Time get_Duration() const", asMETHOD(sf::Music, getDuration), asCALL_THISCALL); asAssert(r);
+	// r = eng->RegisterObjectMethod("Music", "::Time get_Duration() const", asMETHOD(sf::Music, getDuration), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectMethod("Music", "void Play()", asMETHOD(sf::Music, play), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Music", "void Pause()", asMETHOD(sf::Music, pause), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Music", "void Stop()", asMETHOD(sf::Music, stop), asCALL_THISCALL); asAssert(r);
 
-	r = eng->RegisterObjectMethod("Music", "Audio::Status get_Status() const", asMETHOD(sf::Music, getStatus), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Music", "sf::Audio::Status get_Status() const", asMETHOD(sf::Music, getStatus), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Music", "bool get_Looping() const", asMETHOD(sf::Music, getLoop), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Music", "void set_Looping(bool loop)", asMETHOD(sf::Music, setLoop), asCALL_THISCALL); asAssert(r);
 }

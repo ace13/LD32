@@ -144,11 +144,17 @@ void AS_SFML::priv::drawable_common(const char* name, asIScriptEngine* eng)
 	r = eng->RegisterObjectMethod(name, "void Scale(::Vec2&in factor)", asMETHODPR(sf::Transformable, scale, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod(name, "void Rotate(float ang)", asMETHOD(sf::Transformable, rotate), asCALL_THISCALL); asAssert(r);
 
-	char declaration[32];
-	std::sprintf(declaration, "void Draw(%s&in)", name);
-	r = eng->RegisterObjectMethod("::sf::Renderer", declaration, asFUNCTION(draw_common), asCALL_THISCALL_OBJFIRST); asAssert(r);
-	std::sprintf(declaration, "void Draw(%s&in,const Shader@)", name);
-	r = eng->RegisterObjectMethod("::sf::Renderer", declaration, asFUNCTION(draw_shader), asCALL_THISCALL_OBJFIRST); asAssert(r);
+	std::string temp = eng->GetDefaultNamespace();
+	std::string ns = temp;
+	r = eng->SetDefaultNamespace("sf"); asAssert(r);
+
+	char declaration[64];
+	std::sprintf(declaration, "void Draw(%s::%s&in)", ns.c_str(), name);
+	r = eng->RegisterObjectMethod("Renderer", declaration, asFUNCTION(draw_common), asCALL_CDECL_OBJFIRST); asAssert(r);
+	std::sprintf(declaration, "void Draw(%s::%s&in,const Shader@)", ns.c_str(), name);
+	r = eng->RegisterObjectMethod("Renderer", declaration, asFUNCTION(draw_shader), asCALL_CDECL_OBJFIRST); asAssert(r);
+
+	r = eng->SetDefaultNamespace(temp.c_str()); asAssert(r);
 }
 
 void AS_SFML::priv::shapes(CSerializer* ser)
