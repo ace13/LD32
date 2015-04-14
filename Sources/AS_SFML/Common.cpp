@@ -24,6 +24,20 @@ bool AS_SFML::addSFMLExtensions(asIScriptEngine* engine)
 	return true;
 }
 
+bool AS_SFML::addSFMLSerializers(CSerializer* serializer)
+{
+	typedef void(*regfunc)(CSerializer*);
+	regfunc parts[] = {
+		priv::color, priv::joystick, priv::shapes, priv::sprite,
+		priv::text, priv::view
+	};
+
+	for (auto& func : parts)
+		func(serializer);
+
+	return true;
+}
+
 namespace
 {
 	sf::Font* getDefaultFontPtr()

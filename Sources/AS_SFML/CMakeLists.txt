@@ -16,6 +16,7 @@ set(SOURCES
 	Sound.cpp
 	Sprite.cpp
 	Text.cpp
+	Texture.cpp
 	View.cpp
 )
 
