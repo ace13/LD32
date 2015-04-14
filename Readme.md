@@ -7,7 +7,6 @@ Dependencies
 ------------
 
 - Angelscript 2.30.0
-- (AngelscripJIT - latest git)
 - SFML - 2.2
 
 Building
@@ -31,4 +30,4 @@ Create your build directory, set up using cmake, compile with Visual Studio 2012
 Running
 -------
 
-* TODO *
+_TODO_

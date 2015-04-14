@@ -45,7 +45,7 @@ int GameClass::run()
 
 		while (mRenderWindow.pollEvent(ev))
 		{
-			mES.sendUnsafeGlobalMessage<void, const sf::Event&>(eventID, ev);
+			mES.sendSafeGlobalMessage<void, const sf::Event&>(eventID, ev);
 		}
 
 		while (totalTime >= tickDuration)
@@ -54,16 +54,16 @@ int GameClass::run()
 			mES.sendUnsafeGlobalMessage<void, const Util::Timespan&>(tickID, tickDuration);
 		}
 
-		mES.sendUnsafeGlobalMessage<void, const Util::Timespan&>(updateID, frameTime);
+		mES.sendSafeGlobalMessage<void, const Util::Timespan&>(updateID, frameTime);
 
 		mRenderWindow.clear();
 
-		mES.sendUnsafeGlobalMessage<void, sf::RenderTarget&>(drawID, mRenderWindow);
+		mES.sendSafeGlobalMessage<void, sf::RenderTarget&>(drawID, mRenderWindow);
 
 		gameView = mRenderWindow.getView();
 		mRenderWindow.setView(sf::View(sf::Vector2f(mRenderWindow.getSize() / 2u), (sf::Vector2f)mRenderWindow.getSize()));
 
-		mES.sendUnsafeGlobalMessage<void, sf::RenderTarget&>(drawUIID, mRenderWindow);
+		mES.sendSafeGlobalMessage<void, sf::RenderTarget&>(drawUIID, mRenderWindow);
 
 		mRenderWindow.setView(gameView);
 

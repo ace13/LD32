@@ -33,6 +33,7 @@ namespace Util
 		std::list<WatcherData*> mWatches;
 		std::list<std::string> mChanges;
 		Timestamp mLastCheck;
+		
 #ifdef __linux__
 		int mInotify;
 #endif

@@ -55,7 +55,7 @@ else()
 endif()
 
 find_package(Angelscript REQUIRED)
-find_package(AngelscriptJIT)
+# find_package(AngelscriptJIT)
 add_subdirectory(Externals/AS_Addons)
 add_subdirectory(Externals/Kunlaboro)
 

@@ -2,6 +2,7 @@ set(HEADERS
 	GameClass.hpp
 
 	Game/Camera.hpp
+	Game/ScriptExtensions.hpp
 	Game/ScriptManager.hpp
 	Game/ScriptObject.hpp
 	Game/Statistics.hpp
@@ -23,6 +24,7 @@ set(SOURCES
 	GameClass.cpp
 
 	Game/Camera.cpp
+	Game/ScriptExtensions.cpp
 	Game/ScriptManager.cpp
 	Game/ScriptObject.cpp
 	Game/Statistics.cpp

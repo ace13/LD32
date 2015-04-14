@@ -1,12 +1,13 @@
-SET(PARENT_SCOPE Angelscript_SOURCES
-	debugger/debugger.cpp
-	scriptarray/scriptarray.cpp
-	scriptbuilder/scriptbuilder.cpp
-	scriptdictionary/scriptdictionary.cpp
-	scripthelper/scripthelper.cpp
-	scriptmath/scriptmath.cpp
-	scriptmath/scriptmathcomplex.cpp
-	scriptstdstring/scriptstdstring.cpp
-	scriptstdstring/scriptstdstring_utils.cpp
-	serializer/serializer.cpp
-)
+SET(PWD ${CMAKE_CURRENT_SOURCE_DIR})
+SET(Angelscript_SOURCES
+	${PWD}/debugger/debugger.cpp
+	${PWD}/scriptarray/scriptarray.cpp
+	${PWD}/scriptbuilder/scriptbuilder.cpp
+	${PWD}/scriptdictionary/scriptdictionary.cpp
+	${PWD}/scripthelper/scripthelper.cpp
+	${PWD}/scriptmath/scriptmath.cpp
+	${PWD}/scriptmath/scriptmathcomplex.cpp
+	${PWD}/scriptstdstring/scriptstdstring.cpp
+	${PWD}/scriptstdstring/scriptstdstring_utils.cpp
+	${PWD}/serializer/serializer.cpp
+PARENT_SCOPE )

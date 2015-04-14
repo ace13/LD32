@@ -1,13 +1,10 @@
 include(FindPackageHandleStandardArgs)
 
 FIND_PATH(AngelscriptJIT_DIR as_jit.h)
-SET(PARENT_SCOPE AngelscriptJIT_INCLUDE_DIR "")
-SET(PARENT_SCOPE AngelscriptJIT_SOURCES "")
+SET(AngelscriptJIT_INCLUDE_DIR "" )
+SET(AngelscriptJIT_SOURCES "" )
 
-find_package_handle_standard_args(AngelscriptJIT DEFAULT_MSG
-                                  AngelscriptJIT_DIR)
-
-if (AngelscriptJIT_FOUND)
+if (AngelscriptJIT_DIR)
   SET(AngelscriptJIT_SOURCES
     ${AngelscriptJIT_DIR}/as_jit.cpp
   )
@@ -24,6 +21,10 @@ if (AngelscriptJIT_FOUND)
 
   SET(AngelscriptJIT_INCLUDE_DIR ${AngelscriptJIT_DIR})
 endif()
+
+
+find_package_handle_standard_args(AngelscriptJIT DEFAULT_MSG
+                                  AngelscriptJIT_DIR AngelscriptJIT_SOURCES)
 
 MARK_AS_ADVANCED(
   AngelscriptJIT_DIR
