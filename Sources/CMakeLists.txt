@@ -2,8 +2,8 @@ set(HEADERS
 	GameClass.hpp
 
 	Game/Camera.hpp
-	Game/ScriptMan.hpp
-	Game/ScriptObj.hpp
+	Game/ScriptManager.hpp
+	Game/ScriptObject.hpp
 	Game/Statistics.hpp
 
 	Math/Common.hpp
@@ -14,8 +14,8 @@ set(HEADERS
 	Math/Spinor.hpp
 	Math/Vec2.hpp
 
-	Util/DateTime.hpp
 	Util/DefaultFont.hpp
+	Util/FileWatcher.hpp
 	Util/Time.hpp
 )
 
@@ -23,8 +23,8 @@ set(SOURCES
 	GameClass.cpp
 
 	Game/Camera.cpp
-	Game/ScriptMan.cpp
-	Game/ScriptObj.cpp
+	Game/ScriptManager.cpp
+	Game/ScriptObject.cpp
 	Game/Statistics.cpp
 
 	Math/Common.cpp
@@ -32,8 +32,8 @@ set(SOURCES
 	Math/Spinor.cpp
 	Math/Vec2.cpp
 
-	Util/DateTime.cpp
 	Util/DefaultFont.cpp
+	Util/FileWatcher.cpp
 	Util/Time.cpp
 
 	${Angelscript_SOURCES}
