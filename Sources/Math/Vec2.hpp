@@ -34,4 +34,4 @@ namespace Math
 }
 
 template<typename T>
-inline Math::Vec2::Vec2(const sf::Vector2<T>& v) : sf::Vector2f(v.x, v.y) { }
+inline Math::Vec2::Vec2(const sf::Vector2<T>& v) : sf::Vector2f((float)v.x, (float)v.y) { }

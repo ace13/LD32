@@ -7,6 +7,7 @@ class GameClass
 {
 public:
 	static void RegisterComponents(Kunlaboro::EntitySystem&);
+	static GameClass& Singleton();
 
 	GameClass(Kunlaboro::EntitySystem& es);
 
@@ -18,6 +19,7 @@ public:
 	void setTickRate(int rate);
 
 	sf::RenderTarget& getTarget();
+	sf::RenderWindow& getWindow();
 
 private:
 	int mTickRate;

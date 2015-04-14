@@ -56,10 +56,12 @@ endif()
 
 find_package(Angelscript REQUIRED)
 find_package(AngelscriptJIT)
+add_subdirectory(Externals/AS_Addons)
 add_subdirectory(Externals/Kunlaboro)
 
 include_directories(
 	Sources/
+	Externals/AS_Addons/
 	Externals/Kunlaboro/include
 	${Angelscript_INCLUDE_DIR}
 	${AngelscriptJIT_INCLUDE_DIR}

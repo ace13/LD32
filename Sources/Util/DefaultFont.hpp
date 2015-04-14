@@ -8,6 +8,6 @@
 namespace Util
 {
 
-	extern sf::Font getDefaultFont();
+	extern sf::Font& getDefaultFont();
 
 }

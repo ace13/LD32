@@ -29,7 +29,7 @@ namespace
 #endif
 }
 
-sf::Font Util::getDefaultFont()
+sf::Font& Util::getDefaultFont()
 {
 	static sf::Font* sFont = nullptr;
 
