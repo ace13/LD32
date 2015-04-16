@@ -1,7 +1,19 @@
 #include "ScriptManager.hpp"
 #include "ScriptExtensions.hpp"
+#include "ScriptObject.hpp"
+#include "../Util/Path.hpp"
 
 #include <scripthelper/scripthelper.h>
+#include <serializer/serializer.h>
+
+#include <algorithm>
+
+#ifdef _WIN32
+#include <direct.h>
+#else
+#include <limits.h>
+#include <cstdlib>
+#endif
 
 using namespace Game;
 
@@ -20,6 +32,41 @@ namespace
 		else if (msg->type == asMSGTYPE_INFORMATION)
 			type = "INFO";
 		printf("%s (%d, %d) : %s : %s\n", msg->section, msg->row, msg->col, type, msg->message);
+	}
+
+	class BytecodeStore : public asIBinaryStream
+	{
+	public:
+		BytecodeStore() : mTellg(0) { }
+
+		void Read(void *ptr, asUINT size)
+		{
+			char* data = (char*)ptr;
+			std::memcpy(data, &mStore[0] + mTellg, size);
+			mTellg += size;
+		}
+		void Write(const void *ptr, asUINT size)
+		{
+			const char* data = (const char*)ptr;
+
+			for (uint32_t i = 0; i < size; ++i)
+				mStore.push_back(data[i]);
+		}
+
+	private:
+		std::vector<char> mStore;
+		size_t mTellg;
+	};
+
+	std::string normalizePath(const std::string& unnormalized)
+	{
+		std::string path = unnormalized;
+
+#ifdef _WIN32
+		std::replace(path.begin(), path.end(), '/', '\\');
+#endif
+
+		return Util::getAbsolutePath(path);
 	}
 }
 
@@ -52,12 +99,64 @@ bool ScriptManager::loadScriptFromFile(const std::string& file)
 {
 	return false;
 }
-bool ScriptManager::loadScriptFromMemory(const std::string& file, const char* data, size_t size)
+bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* data, size_t size)
 {
-	mBuilder.StartNewModule(mEngine, "::memory::");
+	std::string file = normalizePath(path);
 
-	mBuilder.AddSectionFromMemory(file.c_str(), data, size);
-	int r = mBuilder.BuildModule();
+	bool reload = mLoadedScripts[file].DirectlyLoaded;
+	mLoadedScripts[file].Timestamp = Util::ClockImpl::now();
+
+	if (reload)
+	{
+		auto oldMod = mEngine->GetModule(file.c_str());
+
+		CSerializer serial;
+		addGeneralSerializerTypes(&serial);
+		AS_SFML::addSFMLSerializers(&serial);
+
+		for (auto& obj : mObjects)
+		{
+			auto asObj = obj->getObject();
+
+			if (asObj->GetObjectType()->GetModule() == oldMod)
+				serial.AddExtraObjectToStore(asObj);
+		}
+
+		mBuilder.StartNewModule(mEngine, "::memory::");
+		mBuilder.AddSectionFromMemory(file.c_str(), data, size);
+		int r = mBuilder.BuildModule();
+		if (r < 0)
+			return false;
+
+		BytecodeStore store;
+		auto mod = mBuilder.GetModule();
+
+		mod->SaveByteCode(&store);
+
+		serial.Store(oldMod);
+
+		oldMod->LoadByteCode(&store);
+
+		serial.Restore(oldMod);
+		for (auto& obj : mObjects)
+		{
+			auto asObj = obj->getObject();
+
+			if (asObj->GetObjectType()->GetModule() == oldMod)
+				obj->setObject((asIScriptObject*)serial.GetPointerToRestoredObject(asObj));
+		}
+	}
+	else
+	{
+		mBuilder.StartNewModule(mEngine, file.c_str());
+		mBuilder.AddSectionFromMemory(file.c_str(), data, size);
+
+		int r = mBuilder.BuildModule();
+		if (r < 0)
+			return false;
+
+		mLoadedScripts[file].DirectlyLoaded = true;
+	}
 
 	return false;
 }
@@ -68,9 +167,49 @@ void ScriptManager::defineWord(const std::string& word)
 }
 void ScriptManager::checkForUpdates()
 {
+	std::list<std::string> checked;
+	static std::function<void(const std::string& file)> recursiveLoader = [&](const std::string& file)
+	{
+		if (std::find(checked.cbegin(), checked.cend(), file) != checked.end())
+			return;
+
+		checked.push_back(file);
+		auto& loaded = mLoadedScripts[file];
+
+		for (auto& includee : loaded.IncludedFrom)
+			recursiveLoader(includee);
+
+		if (loaded.DirectlyLoaded)
+			loadScriptFromFile(file);
+	};
+
 	std::string file;
 	while (mWatcher.pollChange(file))
 	{
-		
+		file = normalizePath(file);
+
+		if (mLoadedScripts.count(file) == 0)
+			continue;
+
+		recursiveLoader(file);
 	}
+}
+
+
+void ScriptManager::notifyNewObject(ScriptObject* obj)
+{
+	mObjects.push_back(obj);
+}
+
+void ScriptManager::notifyObjectRemoved(ScriptObject* obj)
+{
+	auto it = std::find(mObjects.cbegin(), mObjects.cend(), obj);
+	if (it != mObjects.cend())
+		mObjects.erase(it);
+}
+
+
+ScriptManager::ScriptFileData::ScriptFileData() : Timestamp(Util::ClockImpl::now()), DirectlyLoaded(false)
+{
+
 }

@@ -51,6 +51,8 @@ namespace Game
 		Util::FileWatcher mWatcher;
 		std::list<ScriptObject*> mObjects;
 		std::unordered_map<std::string, ScriptFileData> mLoadedScripts;
+
+		friend class ScriptObject;
 	};
 
 }

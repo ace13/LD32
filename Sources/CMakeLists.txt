@@ -17,6 +17,7 @@ set(HEADERS
 
 	Util/DefaultFont.hpp
 	Util/FileWatcher.hpp
+	Util/Path.hpp
 	Util/Time.hpp
 )
 
@@ -36,6 +37,7 @@ set(SOURCES
 
 	Util/DefaultFont.cpp
 	Util/FileWatcher.cpp
+	Util/Path.cpp
 	Util/Time.cpp
 
 	${Angelscript_SOURCES}

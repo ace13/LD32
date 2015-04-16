@@ -115,10 +115,7 @@ void FileWatcher::tick()
 
 				if (pNotify->FileNameLength > 0)
 				{
-					std::string path;
-					if (mFolder != watch->Folder)
-						path = watch->Folder.substr(mFolder.size() + 1) + '\\';
-					
+					std::string path = watch->Folder + "\\";
 					sf::String filePath(std::wstring(pNotify->FileName, pNotify->FileNameLength));
 					path += filePath;
 

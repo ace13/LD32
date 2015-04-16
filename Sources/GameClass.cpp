@@ -1,4 +1,5 @@
 #include "GameClass.hpp"
+#include "Game/ScriptManager.hpp"
 #include "Game/Statistics.hpp"
 #include "Util/Time.hpp"
 
@@ -38,7 +39,8 @@ int GameClass::run()
 	Util::Timespan tickDuration = std::chrono::nanoseconds(1000000000 / mTickRate);
 
 	sf::Event ev;
-	Util::Timestamp lastFrame = Util::ClockImpl::now();
+	Util::Timestamp lastFrame = Util::ClockImpl::now(),
+		lastChecked = Util::ClockImpl::now() + std::chrono::milliseconds(500);
 	Util::Timespan totalTime;
 	Kunlaboro::RequestId eventID = Kunlaboro::hash::hashString("Game.Event"),
 		drawID = Kunlaboro::hash::hashString("Game.Draw"),
@@ -79,6 +81,7 @@ int GameClass::run()
 
 		mRenderWindow.display();
 
+		Game::ScriptManager::Singleton().checkForUpdates();
 		lastFrame = now;
 	}
 

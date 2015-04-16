@@ -5,10 +5,9 @@
 
 #include <angelscript.h>
 #include <scriptarray/scriptarray.h>
-#include <scriptdictionary/scriptdictionary.h>
 #include <scriptmath/scriptmath.h>
-#include <scriptmath/scriptmathcomplex.h>
 #include <scriptstdstring/scriptstdstring.h>
+#include <serializer/serializer.h>
 
 #include <cassert>
 #include <new>
@@ -19,10 +18,8 @@ namespace
 	{
 		RegisterScriptArray(eng, true);
 		RegisterScriptMath(eng);
-		RegisterScriptMathComplex(eng);
 		RegisterStdString(eng);
 		RegisterStdStringUtils(eng);
-		RegisterScriptDictionary(eng);
 	}
 
 #ifndef AS_SUPPORT_VALRET
@@ -150,4 +147,52 @@ void Game::addGeneralScriptExtensions(asIScriptEngine* eng)
 {
 	as_addons(eng);
 	math(eng);
+}
+
+namespace
+{
+	template<typename T>
+	struct CSimpleType : public CUserType
+	{
+		void Store(CSerializedValue *val, void *ptr)
+		{
+			val->SetUserData(new T(*(T*)ptr));
+		}
+		void Restore(CSerializedValue *val, void *ptr)
+		{
+			T *buffer = (T*)val->GetUserData();
+			*(T*)ptr = *buffer;
+		}
+		void CleanupUserData(CSerializedValue *val)
+		{
+			T *buffer = (T*)val->GetUserData();
+			delete buffer;
+		}
+	};
+
+	struct CArrayType : public CUserType
+	{
+		void Store(CSerializedValue *val, void *ptr)
+		{
+			CScriptArray *arr = (CScriptArray*)ptr;
+			for (unsigned int i = 0; i < arr->GetSize(); i++)
+				val->m_children.push_back(new CSerializedValue(val, "", "", arr->At(i), arr->GetElementTypeId()));
+		}
+		void Restore(CSerializedValue *val, void *ptr)
+		{
+			CScriptArray *arr = (CScriptArray*)ptr;
+			arr->Resize(val->m_children.size());
+			for (size_t i = 0; i < val->m_children.size(); ++i)
+				val->m_children[i]->Restore(arr->At(i), arr->GetElementTypeId());
+		}
+	};
+}
+
+void Game::addGeneralSerializerTypes(CSerializer* ser)
+{
+	ser->AddUserType(new CArrayType(), "array");
+	ser->AddUserType(new CSimpleType<std::string>(), "string");
+
+	ser->AddUserType(new CSimpleType<Math::Rect>(), "Rect");
+	ser->AddUserType(new CSimpleType<Math::Vec2>(), "Vec2");
 }

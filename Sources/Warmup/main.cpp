@@ -1,8 +1,11 @@
 #include <GameClass.hpp>
 #include <Game/ScriptManager.hpp>
+#include <Util/Path.hpp>
 
 int main(int argc, char** argv)
 {
+	Util::setSaneCWD();
+
 	Kunlaboro::EntitySystem es;
 	GameClass game(es);
 	Game::ScriptManager::Singleton();
