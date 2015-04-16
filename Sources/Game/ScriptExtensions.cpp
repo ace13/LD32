@@ -287,6 +287,12 @@ namespace
 
 		ease<float>("FloatEaser", "float", eng);
 		ease<Math::Vec2>("Vec2Easer", "Vec2", eng);
+
+		r = eng->RegisterGlobalProperty("const float PI", const_cast<float*>(&Math::PI)); asAssert(r);
+		r = eng->RegisterGlobalProperty("const float HALF_PI", const_cast<float*>(&Math::HALF_PI)); asAssert(r);
+		r = eng->RegisterGlobalProperty("const float TWICE_PI", const_cast<float*>(&Math::TWICE_PI)); asAssert(r);
+		r = eng->RegisterGlobalFunction("float Random(float min, float max)", asFUNCTION(Math::randomFloat), asCALL_CDECL); asAssert(r);
+		r = eng->RegisterGlobalFunction("int Random(int min, int max)", asFUNCTION(Math::randomInt), asCALL_CDECL); asAssert(r);
 	}
 }
 
