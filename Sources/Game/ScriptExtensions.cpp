@@ -1,5 +1,6 @@
 #include "ScriptExtensions.hpp"
 
+#include <Math/Eases.hpp>
 #include <Math/Rect.hpp>
 #include <Math/Vec2.hpp>
 
@@ -10,6 +11,7 @@
 #include <serializer/serializer.h>
 
 #include <cassert>
+#include <cstdio>
 #include <new>
 
 namespace
@@ -20,6 +22,130 @@ namespace
 		RegisterScriptMath(eng);
 		RegisterStdString(eng);
 		RegisterStdStringUtils(eng);
+	}
+
+#ifndef AS_SUPPORT_VALRET
+	template<typename T>
+	void ease_value(asIScriptGeneric* gen)
+	{
+		Math::Easer<T>* ease = reinterpret_cast<Math::Easer<T>*>(gen->GetObject());
+		T& beg = *reinterpret_cast<T*>(gen->GetArgObject(0));
+		T& end = *reinterpret_cast<T*>(gen->GetArgObject(1));
+		float t = gen->GetArgFloat(2);
+
+		new (gen->GetAddressOfReturnLocation()) T(ease->ease(beg, end, t));
+	}
+	template<>
+	void ease_value<float>(asIScriptGeneric* gen)
+	{
+		Math::Easer<float>* ease = reinterpret_cast<Math::Easer<float>*>(gen->GetObject());
+		float beg = gen->GetArgFloat(0);
+		float end = gen->GetArgFloat(1);
+		float t = gen->GetArgFloat(2);
+
+		gen->SetReturnFloat(ease->ease(beg, end, t));
+	}
+#endif
+
+	enum EaseFuncs
+	{
+		Ease_InBack,
+		Ease_InBounce,
+		Ease_InCirc,
+		Ease_InCubic,
+		Ease_InElastic,
+		Ease_InExpo,
+		Ease_InQuad,
+		Ease_InQuart,
+		Ease_InQuint,
+		Ease_InSine,
+		Ease_OutBack,
+		Ease_OutBounce,
+		Ease_OutCirc,
+		Ease_OutCubic,
+		Ease_OutElastic,
+		Ease_OutExpo,
+		Ease_OutQuad,
+		Ease_OutQuart,
+		Ease_OutQuint,
+		Ease_OutSine,
+		Ease_InOutBack,
+		Ease_InOutBounce,
+		Ease_InOutCirc,
+		Ease_InOutCubic,
+		Ease_InOutElastic,
+		Ease_InOutExpo,
+		Ease_InOutQuad,
+		Ease_InOutQuart,
+		Ease_InOutQuint,
+		Ease_InOutSine
+	};
+
+	template<typename T>
+	void create_easer(void* mem, EaseFuncs func, float d)
+	{
+		Math::Easer<T>::EaseFunc f;
+
+		switch (func)
+		{
+		case Ease_InBack: f = Math::Eases::easeInBack<T>; break;
+		case Ease_InBounce: f = Math::Eases::easeInBounce<T>; break;
+		case Ease_InCirc: f = Math::Eases::easeInCirc<T>; break;
+		case Ease_InCubic: f = Math::Eases::easeInCubic<T>; break;
+		case Ease_InElastic: f = Math::Eases::easeInElastic<T>; break;
+		case Ease_InExpo: f = Math::Eases::easeInExpo<T>; break;
+		case Ease_InQuad: f = Math::Eases::easeInQuad<T>; break;
+		case Ease_InQuart: f = Math::Eases::easeInQuart<T>; break;
+		case Ease_InQuint: f = Math::Eases::easeInQuint<T>; break;
+		case Ease_InSine: f = Math::Eases::easeInSine<T>; break;
+		case Ease_OutBack: f = Math::Eases::easeOutBack<T>; break;
+		case Ease_OutBounce: f = Math::Eases::easeOutBounce<T>; break;
+		case Ease_OutCirc: f = Math::Eases::easeOutCirc<T>; break;
+		case Ease_OutCubic: f = Math::Eases::easeOutCubic<T>; break;
+		case Ease_OutElastic: f = Math::Eases::easeOutElastic<T>; break;
+		case Ease_OutExpo: f = Math::Eases::easeOutExpo<T>; break;
+		case Ease_OutQuad: f = Math::Eases::easeOutQuad<T>; break;
+		case Ease_OutQuart: f = Math::Eases::easeOutQuart<T>; break;
+		case Ease_OutQuint: f = Math::Eases::easeOutQuint<T>; break;
+		case Ease_OutSine: f = Math::Eases::easeOutSine<T>; break;
+		case Ease_InOutBack: f = Math::Eases::easeInOutBack<T>; break;
+		case Ease_InOutBounce: f = Math::Eases::easeInOutBounce<T>; break;
+		case Ease_InOutCirc: f = Math::Eases::easeInOutCirc<T>; break;
+		case Ease_InOutCubic: f = Math::Eases::easeInOutCubic<T>; break;
+		case Ease_InOutElastic: f = Math::Eases::easeInOutElastic<T>; break;
+		case Ease_InOutExpo: f = Math::Eases::easeInOutExpo<T>; break;
+		case Ease_InOutQuad: f = Math::Eases::easeInOutQuad<T>; break;
+		case Ease_InOutQuart: f = Math::Eases::easeInOutQuart<T>; break;
+		case Ease_InOutQuint: f = Math::Eases::easeInOutQuint<T>; break;
+		case Ease_InOutSine: f = Math::Eases::easeInOutSine<T>; break;
+		}
+
+		new (mem)Math::Easer<T>(f, d);
+	}
+	template<typename T>
+	void destroy_easer(Math::Easer<T>* ease)
+	{
+		ease->~Easer();
+	}
+
+	template<typename T>
+	void ease(const char* name, const char* typeName, asIScriptEngine* eng)
+	{
+		int r;
+
+		r = eng->RegisterObjectType(name, sizeof(Math::Easer<T>), asOBJ_VALUE | asGetTypeTraits<Math::Easer<T>>()); asAssert(r);
+
+		r = eng->RegisterObjectBehaviour(name, asBEHAVE_CONSTRUCT, "void f(EaseFunc, float)", asFUNCTION(create_easer<T>), asCALL_CDECL_OBJFIRST); asAssert(r);
+		r = eng->RegisterObjectBehaviour(name, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_easer<T>), asCALL_CDECL_OBJFIRST); asAssert(r);
+
+		char buffer[256];
+		std::sprintf(buffer, "%s ease(%s&in start, %s&in change, float time) const", typeName, typeName, typeName);
+#ifndef AS_SUPPORT_VALRET
+		r = eng->RegisterObjectMethod(name, buffer, asFUNCTION(ease_value<T>), asCALL_GENERIC); asAssert(r);
+#else
+		r = eng->RegisterObjectMethod(name, buffer, asMETHOD(Math::Easer<T>, ease), asCALL_THISCALL); asAssert(r);
+#endif
+
 	}
 
 #ifndef AS_SUPPORT_VALRET
@@ -140,6 +266,27 @@ namespace
 
 		rect(eng);
 		vec2(eng);
+	
+#define FUNC(name) r = eng->RegisterEnumValue("EaseFunc", #name, Ease_ ## name); asAssert(r)
+#define METHOD(name) FUNC(In ## name); FUNC(Out ## name); FUNC(InOut ## name)
+
+		r = eng->RegisterEnum("EaseFunc"); asAssert(r);
+		METHOD(Back);
+		METHOD(Bounce);
+		METHOD(Circ);
+		METHOD(Cubic);
+		METHOD(Elastic);
+		METHOD(Expo);
+		METHOD(Quad);
+		METHOD(Quart);
+		METHOD(Quint);
+		METHOD(Sine);
+
+#undef FUNC
+#undef METHOD
+
+		ease<float>("FloatEaser", "float", eng);
+		ease<Math::Vec2>("Vec2Easer", "Vec2", eng);
 	}
 }
 

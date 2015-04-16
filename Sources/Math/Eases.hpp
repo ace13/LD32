@@ -9,21 +9,28 @@ namespace Math
 	class Easer
 	{
 	public:
-		typedef std::function<T(const T&, const T&, float, float)> easeFunc;
+		typedef std::function<T(const T&, const T&, float, float)> EaseFunc;
 
-		Easer(easeFunc function, float duration);
+		Easer(EaseFunc function, float duration);
+		Easer(const Easer&) = default;
+		~Easer() = default;
+
+		Easer& operator=(const Easer&) = default;
 
 		T ease(const T& start, const T& end, float time);
 
+		float getDuration() const;
+		void setDuration(float d);
+
 	private:
 		float mDuration;
-		easeFunc mEaser;
+		EaseFunc mEaser;
 	};
 
 	namespace Eases
 	{
 
-#define FUNC(name) template<typename T> void name(T&,const T&,float,float)
+#define FUNC(name) template<typename T> T name(const T&,const T&,float,float)
 #define METHOD(name) FUNC(easeIn ## name); FUNC(easeOut ## name); FUNC(easeInOut ## name)
 
 		METHOD(Back);

@@ -15,6 +15,9 @@ namespace Math
 		Vec2(const Vec2&) = default;
 		~Vec2() = default;
 
+		template<typename T>
+		operator sf::Vector2<T>() const;
+
 		float getAngle() const;
 		float getBearing(const Vec2& v2) const;
 		float getDistance(const Vec2& v2) const;
@@ -36,3 +39,5 @@ namespace Math
 
 template<typename T>
 inline Math::Vec2::Vec2(const sf::Vector2<T>& v) : sf::Vector2f((float)v.x, (float)v.y) { }
+template<typename T>
+inline Math::Vec2::operator sf::Vector2<T>() const { return (sf::Vector2<T>)*this; }
