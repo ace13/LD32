@@ -32,6 +32,7 @@ namespace Game
 		void checkForUpdates();
 
 		ScriptObject* createObject(const std::string& file, const std::string& name, Kunlaboro::EntitySystem& es);
+		asIScriptEngine* getEngine();
 
 	private:
 		struct ScriptFileData

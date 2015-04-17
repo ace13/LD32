@@ -6,7 +6,7 @@
 #ifndef AS_SUPPORT_VALRET
 void getMousePos(asIScriptGeneric* gen)
 {
-	new (gen->GetAddressOfReturnLocation()) Math::Vec2(sf::Mouse::getPosition(GameClass::Singleton().getWindow()));
+	new (gen->GetAddressOfReturnLocation()) Math::Vec2(GameClass::Singleton().getWindow().mapPixelToCoords(sf::Mouse::getPosition(GameClass::Singleton().getWindow())));
 }
 #else
 Math::Vec2 getMousePos()

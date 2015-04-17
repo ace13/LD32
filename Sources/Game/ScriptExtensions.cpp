@@ -145,6 +145,8 @@ namespace
 		r = eng->RegisterObjectBehaviour(name, asBEHAVE_CONSTRUCT, "void f(EaseFunc, float)", asFUNCTION(create_easer<T>), asCALL_CDECL_OBJFIRST); asAssert(r);
 		r = eng->RegisterObjectBehaviour(name, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_easer<T>), asCALL_CDECL_OBJFIRST); asAssert(r);
 
+		r = eng->RegisterObjectMethod(name, (std::string(typeName) + "& opAssign(" + typeName + "&in)").c_str(), asMETHOD(Math::Easer<T>, operator=), asCALL_THISCALL); asAssert(r);
+
 		char buffer[256];
 		std::sprintf(buffer, "%s ease(%s&in start, %s&in change, float time) const", typeName, typeName, typeName);
 #ifndef AS_SUPPORT_VALRET
@@ -174,6 +176,10 @@ namespace
 	}
 #endif
 
+	void rect_create_default(void* mem)
+	{
+		new (mem)Math::Rect();
+	}
 	void rect_create(void* mem, float top, float left, float width, float height)
 	{
 		new (mem)Math::Rect(top, left, width, height);
@@ -191,10 +197,12 @@ namespace
 	{
 		int r;
 
-		r = eng->RegisterObjectBehaviour("Rect", asBEHAVE_CONSTRUCT, "void f(float top = 0, float left = 0, float width = 0, float height = 0)", asFUNCTION(rect_create), asCALL_CDECL_OBJFIRST); asAssert(r);
+		r = eng->RegisterObjectBehaviour("Rect", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(rect_create_default), asCALL_CDECL_OBJFIRST); asAssert(r);
+		r = eng->RegisterObjectBehaviour("Rect", asBEHAVE_CONSTRUCT, "void f(float top, float left, float width, float height)", asFUNCTION(rect_create), asCALL_CDECL_OBJFIRST); asAssert(r);
 		r = eng->RegisterObjectBehaviour("Rect", asBEHAVE_CONSTRUCT, "void f(Vec2&in,Vec2&in)", asFUNCTION(rect_create_vec), asCALL_CDECL_OBJFIRST); asAssert(r);
 		r = eng->RegisterObjectBehaviour("Rect", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(rect_destroy), asCALL_CDECL_OBJFIRST); asAssert(r);
-
+		
+		r = eng->RegisterObjectMethod("Rect", "Rect& opAssign(Rect&in)", asMETHOD(Math::Rect, operator=), asCALL_THISCALL); asAssert(r);
 		r = eng->RegisterObjectMethod("Rect", "bool opEquals(Rect&in rhs) const", asFUNCTIONPR(sf::operator==, (const sf::FloatRect&, const sf::FloatRect&), bool), asCALL_CDECL_OBJFIRST); asAssert(r);
 
 		r = eng->RegisterObjectProperty("Rect", "float Top", asOFFSET(Math::Rect, top)); asAssert(r);
@@ -351,7 +359,7 @@ namespace
 	{
 		int r;
 
-		r = eng->RegisterObjectType("Rect", sizeof(Math::Rect), asOBJ_VALUE | asOBJ_POD | asGetTypeTraits<Math::Rect>()); asAssert(r);
+		r = eng->RegisterObjectType("Rect", sizeof(Math::Rect), asOBJ_VALUE | asGetTypeTraits<Math::Rect>()); asAssert(r);
 		r = eng->RegisterObjectType("Vec2", sizeof(Math::Vec2), asOBJ_VALUE | asGetTypeTraits<Math::Vec2>()); asAssert(r);
 
 		rect(eng);

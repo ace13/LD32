@@ -1,7 +1,7 @@
 set(HEADERS
 	GameClass.hpp
 
-	Game/Camera.hpp
+	Game/AspectHolder.hpp
 	Game/ScriptExtensions.hpp
 	Game/ScriptManager.hpp
 	Game/ScriptObject.hpp
@@ -24,7 +24,7 @@ set(HEADERS
 set(SOURCES
 	GameClass.cpp
 
-	Game/Camera.cpp
+	Game/AspectHolder.cpp
 	Game/ScriptExtensions.cpp
 	Game/ScriptManager.cpp
 	Game/ScriptObject.cpp

@@ -228,6 +228,11 @@ ScriptObject* ScriptManager::createObject(const std::string& file, const std::st
 	return obj;
 }
 
+asIScriptEngine* ScriptManager::getEngine()
+{
+	return mEngine;
+}
+
 void ScriptManager::notifyNewObject(ScriptObject* obj)
 {
 	mObjects.push_back(obj);
