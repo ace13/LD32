@@ -56,6 +56,7 @@ void AS_SFML::priv::view(asIScriptEngine* eng)
 	r = eng->RegisterObjectMethod("View", "void set_Viewport(::Rect&in center)", asMETHOD(sf::View, setViewport), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectMethod("View", "void Move(::Vec2&in offset)", asMETHODPR(sf::View, move, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("View", "void Move(float x, float y)", asMETHODPR(sf::View, move, (float, float), void), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("View", "void Rotate(float angle)", asMETHOD(sf::View, rotate), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("View", "void Zoom(float factor)", asMETHOD(sf::View, zoom), asCALL_THISCALL); asAssert(r);
 

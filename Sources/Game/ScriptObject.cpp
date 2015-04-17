@@ -4,18 +4,6 @@
 
 using namespace Game;
 
-// TODO: Register reprioritizeRequest
-// Something like:
-//
-// enum Func { Draw, DrawUI, Tick, Update };
-// void ChangePriority(Func, int);
-
-// Also, message passing. Maybe something like:
-// 
-// void SendMessage(string&in name, Dictionary&in data);
-// bool SendQuestion(string&in name, Dictionary&inout data); // Dictionary@ ?
-// 
-
 ScriptObject::ScriptObject(asIObjectType* type) : Kunlaboro::Component("Game.ScriptObject"),
 	mObj(nullptr)
 {

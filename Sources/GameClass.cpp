@@ -55,11 +55,18 @@ int GameClass::run()
 	{
 		Util::Timestamp now = Util::ClockImpl::now();
 		Util::Timespan frameTime = now - lastFrame;
+
+		auto count = frameTime.count();
+		frameTime = Util::Timespan(std::max(0ll, std::min(count, 50000000ll)));
+
 		totalTime += frameTime;
 
 		while (mRenderWindow.pollEvent(ev))
 		{
-			mES.sendSafeGlobalMessage<void, const sf::Event&>(eventID, ev);
+			if (ev.type == sf::Event::Closed)
+				mRenderWindow.close();
+
+			mES.sendUnsafeGlobalMessage<void, const sf::Event&>(eventID, ev);
 		}
 
 		while (totalTime >= tickDuration)
@@ -68,7 +75,7 @@ int GameClass::run()
 			mES.sendUnsafeGlobalMessage<void, const Util::Timespan&>(tickID, tickDuration);
 		}
 
-		mES.sendSafeGlobalMessage<void, const Util::Timespan&>(updateID, frameTime);
+		mES.sendUnsafeGlobalMessage<void, const Util::Timespan&>(updateID, frameTime);
 
 		mRenderWindow.clear();
 

@@ -25,7 +25,9 @@ namespace AS_SFML
 			r = eng->RegisterObjectMethod(name, "void set_Rotation(float ang)", asMETHODPR(Transformable, setRotation, (float), void), asCALL_THISCALL); asAssert(r);
 
 			r = eng->RegisterObjectMethod(name, "void Move(::Vec2&in offest)", asMETHODPR(Transformable, move, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
+			r = eng->RegisterObjectMethod(name, "void Move(float x, float y)", asMETHODPR(Transformable, move, (float, float), void), asCALL_THISCALL); asAssert(r);
 			r = eng->RegisterObjectMethod(name, "void Scale(::Vec2&in factor)", asMETHODPR(Transformable, scale, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
+			r = eng->RegisterObjectMethod(name, "void Scale(float x, float y)", asMETHODPR(Transformable, scale, (float, float), void), asCALL_THISCALL); asAssert(r);
 			r = eng->RegisterObjectMethod(name, "void Rotate(float ang)", asMETHODPR(Transformable, rotate, (float), void), asCALL_THISCALL); asAssert(r);
 		}
 

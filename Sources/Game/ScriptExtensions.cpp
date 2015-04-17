@@ -237,6 +237,43 @@ namespace
 	void create_vec2(void* mem, float x, float y) { new (mem)Math::Vec2(x, y); }
 	void destroy_vec2(Math::Vec2* mem) { mem->~Vec2(); }
 
+#ifndef AS_SUPPORT_VALRET
+	enum OPER_TYPE
+	{
+		OP_ADD,
+		OP_SUB,
+		OP_MUL,
+		OP_DIV
+	};
+
+	template<unsigned int Type>
+	void math_vec2_oper(asIScriptGeneric* gen)
+	{
+		Math::Vec2& v = *reinterpret_cast<Math::Vec2*>(gen->GetObject());
+		Math::Vec2& v2 = *reinterpret_cast<Math::Vec2*>(gen->GetArgObject(0));
+
+		if (Type == OP_ADD)
+			new (gen->GetAddressOfReturnLocation())Math::Vec2(v + v2);
+		else if (Type == OP_SUB)
+			new (gen->GetAddressOfReturnLocation())Math::Vec2(v - v2);
+		else if (Type == OP_MUL)
+			new (gen->GetAddressOfReturnLocation())Math::Vec2(v * v2);
+		else if (Type == OP_DIV)
+			new (gen->GetAddressOfReturnLocation())Math::Vec2(v / v2);
+	}
+	template<unsigned int Type>
+	void math_vec2_oper_float(asIScriptGeneric* gen)
+	{
+		Math::Vec2& v = *reinterpret_cast<Math::Vec2*>(gen->GetObject());
+		float v2 = gen->GetArgFloat(0);
+
+		if (Type == OP_MUL)
+			new (gen->GetAddressOfReturnLocation())Math::Vec2(v * v2);
+		else if (Type == OP_DIV)
+			new (gen->GetAddressOfReturnLocation())Math::Vec2(v / v2);
+	}
+#endif
+
 	void vec2(asIScriptEngine* eng)
 	{
 		int r;
@@ -249,6 +286,28 @@ namespace
 		r = eng->RegisterObjectBehaviour("Vec2", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_vec2), asCALL_CDECL_OBJFIRST); asAssert(r);
 
 		r = eng->RegisterObjectMethod("Vec2", "Vec2& opAssign(Vec2&in)", asMETHOD(Math::Vec2, operator=), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2& opAddAssign(Vec2&in)", asMETHOD(Math::Vec2, operator+=), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2& opSubAssign(Vec2&in)", asMETHOD(Math::Vec2, operator-=), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2& opMulAssign(Vec2&in)", asMETHODPR(Math::Vec2, operator*=, (const Math::Vec2&), Math::Vec2&), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2& opDivAssign(Vec2&in)", asMETHODPR(Math::Vec2, operator/=, (const Math::Vec2&), Math::Vec2&), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2& opMulAssign(float)", asMETHODPR(Math::Vec2, operator*=, (float), Math::Vec2&), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2& opDivAssign(float)", asMETHODPR(Math::Vec2, operator/=, (float), Math::Vec2&), asCALL_THISCALL); asAssert(r);
+
+#ifndef AS_SUPPORT_VALRET
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opAdd(Vec2&in)", asFUNCTION(math_vec2_oper<OP_ADD>), asCALL_GENERIC); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opSub(Vec2&in)", asFUNCTION(math_vec2_oper<OP_SUB>), asCALL_GENERIC); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opMul(Vec2&in)", asFUNCTION(math_vec2_oper<OP_MUL>), asCALL_GENERIC); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opDiv(Vec2&in)", asFUNCTION(math_vec2_oper<OP_DIV>), asCALL_GENERIC); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opMul(float)", asFUNCTION(math_vec2_oper_float<OP_MUL>), asCALL_GENERIC); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opDiv(float)", asFUNCTION(math_vec2_oper_float<OP_DIV>), asCALL_GENERIC); asAssert(r);
+#else
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opAdd(Vec2&in)", asMETHOD(Math::Vec2, operator+), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opSub(Vec2&in)", asMETHOD(Math::Vec2, operator-), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opMul(Vec2&in)", asMETHODPR(Math::Vec2, operator*, (const Math::Vec2&) const, Math::Vec2), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opDiv(Vec2&in)", asMETHODPR(Math::Vec2, operator/, (const Math::Vec2&) const, Math::Vec2), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opMul(float)", asMETHODPR(Math::Vec2, operator*, (float) const, Math::Vec2), asCALL_THISCALL); asAssert(r);
+		r = eng->RegisterObjectMethod("Vec2", "Vec2 opDiv(float)", asMETHODPR(Math::Vec2, operator/, (float) const, Math::Vec2), asCALL_THISCALL); asAssert(r);
+#endif
 
 		r = eng->RegisterObjectMethod("Vec2", "float get_Angle() const", asMETHOD(Math::Vec2, getAngle), asCALL_THISCALL); asAssert(r);
 		r = eng->RegisterObjectMethod("Vec2", "float get_Length() const", asMETHOD(Math::Vec2, getLength), asCALL_THISCALL); asAssert(r);

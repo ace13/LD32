@@ -18,6 +18,20 @@ namespace Math
 		template<typename T>
 		operator sf::Vector2<T>() const;
 
+		Vec2& operator=(const Vec2&) = default;
+		Vec2& operator+=(const Vec2&);
+		Vec2& operator-=(const Vec2&);
+		Vec2& operator*=(const Vec2&);
+		Vec2& operator/=(const Vec2&);
+		Vec2& operator*=(float);
+		Vec2& operator/=(float);
+		Vec2 operator+(const Vec2&) const;
+		Vec2 operator-(const Vec2&) const;
+		Vec2 operator*(const Vec2&) const;
+		Vec2 operator/(const Vec2&) const;
+		Vec2 operator*(float) const;
+		Vec2 operator/(float) const;
+
 		float getAngle() const;
 		float getBearing(const Vec2& v2) const;
 		float getDistance(const Vec2& v2) const;

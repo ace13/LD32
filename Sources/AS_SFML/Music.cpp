@@ -6,7 +6,6 @@ void AS_SFML::priv::music(asIScriptEngine* eng)
 	int r;
 
 	audio_common("Music", eng);
-	// r = eng->RegisterObjectMethod("Music", "::Time get_Duration() const", asMETHOD(sf::Music, getDuration), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectMethod("Music", "void Play()", asMETHOD(sf::Music, play), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Music", "void Pause()", asMETHOD(sf::Music, pause), asCALL_THISCALL); asAssert(r);
@@ -15,6 +14,11 @@ void AS_SFML::priv::music(asIScriptEngine* eng)
 	r = eng->RegisterObjectMethod("Music", "sf::Audio::Status get_Status() const", asMETHOD(sf::Music, getStatus), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Music", "bool get_Looping() const", asMETHOD(sf::Music, getLoop), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Music", "void set_Looping(bool loop)", asMETHOD(sf::Music, setLoop), asCALL_THISCALL); asAssert(r);
+
+	r = eng->RegisterObjectMethod("Music", "float get_Pitch() const", asMETHOD(sf::Music, getPitch), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Music", "void set_Pitch(float pitch) const", asMETHOD(sf::Music, setPitch), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Music", "float get_Volume() const", asMETHOD(sf::Music, getVolume), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Music", "void set_Volume(float volume) const", asMETHOD(sf::Music, setVolume), asCALL_THISCALL); asAssert(r);
 }
 
 void AS_SFML::priv::audio_common(const char* name, asIScriptEngine* eng)
@@ -35,10 +39,5 @@ void AS_SFML::priv::audio_common(const char* name, asIScriptEngine* eng)
 
 		r = eng->SetDefaultNamespace("sf"); asAssert(r);
 	}
-
-	r = eng->RegisterObjectMethod(name, "float get_Pitch() const", asMETHOD(sf::SoundSource, getPitch), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void set_Pitch(float pitch) const", asMETHOD(sf::SoundSource, setPitch), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "float get_Volume() const", asMETHOD(sf::SoundSource, getVolume), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void set_Volume(float volume) const", asMETHOD(sf::SoundSource, setVolume), asCALL_THISCALL); asAssert(r);
 
 }

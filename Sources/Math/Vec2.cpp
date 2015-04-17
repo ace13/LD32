@@ -19,6 +19,19 @@ namespace
 Vec2::Vec2() : sf::Vector2f() { }
 Vec2::Vec2(float x, float y) : sf::Vector2f(x, y) { }
 
+Vec2& Vec2::operator+=(const Vec2& v) { x += v.x, y += v.y; return *this; }
+Vec2& Vec2::operator-=(const Vec2& v) { x -= v.x, y -= v.y; return *this; }
+Vec2& Vec2::operator*=(const Vec2& v) { x *= v.x, y *= v.y; return *this; }
+Vec2& Vec2::operator/=(const Vec2& v) { x /= v.x, y /= v.y; return *this; }
+Vec2& Vec2::operator*=(float v) { x *= v, y *= v; return *this; }
+Vec2& Vec2::operator/=(float v) { x /= v, y /= v; return *this; }
+Vec2 Vec2::operator+(const Vec2& v) const { return Vec2(x + v.x, y + v.y); }
+Vec2 Vec2::operator-(const Vec2& v) const { return Vec2(x - v.x, y - v.y); }
+Vec2 Vec2::operator*(const Vec2& v) const { return Vec2(x * v.x, y * v.y); }
+Vec2 Vec2::operator/(const Vec2& v) const { return Vec2(x / v.x, y / v.y); }
+Vec2 Vec2::operator*(float v) const { return Vec2(x * v, y * v); }
+Vec2 Vec2::operator/(float v) const { return Vec2(x / v, y / v); }
+
 float Vec2::getAngle() const
 {
 	return Angle(*this);

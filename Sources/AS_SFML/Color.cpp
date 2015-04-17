@@ -52,12 +52,12 @@ void AS_SFML::priv::color(asIScriptEngine* eng)
 	
 #ifndef AS_SUPPORT_VALRET
 	r = eng->RegisterObjectMethod("Color", "Color opAdd(Color&in) const", asFUNCTION(color_add), asCALL_GENERIC); asAssert(r);
-	r = eng->RegisterObjectMethod("Color", "Color opSub(Color&in) const", asFUNCTION(color_add), asCALL_GENERIC); asAssert(r);
-	r = eng->RegisterObjectMethod("Color", "Color opMul(Color&in) const", asFUNCTION(color_add), asCALL_GENERIC); asAssert(r);
+	r = eng->RegisterObjectMethod("Color", "Color opSub(Color&in) const", asFUNCTION(color_sub), asCALL_GENERIC); asAssert(r);
+	r = eng->RegisterObjectMethod("Color", "Color opMul(Color&in) const", asFUNCTION(color_mul), asCALL_GENERIC); asAssert(r);
 #else
-	r = eng->RegisterObjectMethod("Color", "Color opAddAssign(Color&in) const", asFUNCTIONPR(sf::operator+, (const sf::Color&, const sf::Color&), sf::Color), asCALL_CDECL_OBJFIRST); asAssert(r);
-	r = eng->RegisterObjectMethod("Color", "Color opSubAssign(Color&in) const", asFUNCTIONPR(sf::operator-, (const sf::Color&, const sf::Color&), sf::Color), asCALL_CDECL_OBJFIRST); asAssert(r);
-	r = eng->RegisterObjectMethod("Color", "Color opMulAssign(Color&in) const", asFUNCTIONPR(sf::operator*, (const sf::Color&, const sf::Color&), sf::Color), asCALL_CDECL_OBJFIRST); asAssert(r);
+	r = eng->RegisterObjectMethod("Color", "Color opAdd(Color&in) const", asFUNCTIONPR(sf::operator+, (const sf::Color&, const sf::Color&), sf::Color), asCALL_CDECL_OBJFIRST); asAssert(r);
+	r = eng->RegisterObjectMethod("Color", "Color opSub(Color&in) const", asFUNCTIONPR(sf::operator-, (const sf::Color&, const sf::Color&), sf::Color), asCALL_CDECL_OBJFIRST); asAssert(r);
+	r = eng->RegisterObjectMethod("Color", "Color opMul(Color&in) const", asFUNCTIONPR(sf::operator*, (const sf::Color&, const sf::Color&), sf::Color), asCALL_CDECL_OBJFIRST); asAssert(r);
 #endif
 
 	r = eng->RegisterObjectMethod("Color", "bool opEquals(Color&in) const", asFUNCTIONPR(sf::operator==, (const sf::Color&, const sf::Color&), bool), asCALL_CDECL_OBJFIRST); asAssert(r);

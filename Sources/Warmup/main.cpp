@@ -26,7 +26,5 @@ int main(int argc, char** argv)
 
 	int ret = game.run();
 
-	delete &Game::ScriptManager::Singleton();
-
 	return ret;
 }
