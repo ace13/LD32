@@ -1,5 +1,6 @@
 #include "ScriptExtensions.hpp"
 
+#include <Game/ScriptObject.hpp>
 #include <Math/Eases.hpp>
 #include <Math/Rect.hpp>
 #include <Math/Vec2.hpp>
@@ -332,6 +333,20 @@ namespace
 #endif
 	}
 
+	void change_prio(int i, int prio)
+	{
+		asIScriptObject* obj = reinterpret_cast<asIScriptObject*>(asGetActiveContext()->GetThisPointer());
+		Game::ScriptObject* sobj = reinterpret_cast<Game::ScriptObject*>(obj->GetObjectType()->GetUserData((uintptr_t)obj));
+
+		switch (i)
+		{
+		case 0: sobj->changeRequestPriority("Game.Draw", prio); break;
+		case 1: sobj->changeRequestPriority("Game.DrawUI", prio); break;
+		case 2: sobj->changeRequestPriority("Game.Tick", prio); break;
+		case 3: sobj->changeRequestPriority("Game.Update", prio); break;
+		}
+	}
+
 	void math(asIScriptEngine* eng)
 	{
 		int r;
@@ -362,6 +377,13 @@ namespace
 
 		ease<float>("FloatEaser", "float", eng);
 		ease<Math::Vec2>("Vec2Easer", "Vec2", eng);
+
+		r = eng->RegisterEnum("Priority"); asAssert(r);
+		r = eng->RegisterEnumValue("Priority", "Draw", 0);
+		r = eng->RegisterEnumValue("Priority", "DrawUI", 1);
+		r = eng->RegisterEnumValue("Priority", "Tick", 2);
+		r = eng->RegisterEnumValue("Priority", "Update", 3);
+		r = eng->RegisterGlobalFunction("void ChangePriority(Priority,int)", asFUNCTION(change_prio), asCALL_CDECL);
 
 		r = eng->RegisterGlobalProperty("const float PI", const_cast<float*>(&Math::PI)); asAssert(r);
 		r = eng->RegisterGlobalProperty("const float HALF_PI", const_cast<float*>(&Math::HALF_PI)); asAssert(r);

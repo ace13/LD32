@@ -4,14 +4,9 @@
 
 using namespace Game;
 
-ScriptObject::ScriptObject(asIObjectType* type) : Kunlaboro::Component("Game.ScriptObject"),
+ScriptObject::ScriptObject() : Kunlaboro::Component("Game.ScriptObject"),
 	mObj(nullptr)
 {
-	if (type)
-	{
-		mObj = reinterpret_cast<asIScriptObject*>(type->GetEngine()->CreateScriptObject(type));
-	}
-
 	ScriptManager::Singleton().notifyNewObject(this);
 	std::memset(mFuncs, 0, sizeof(mFuncs));
 }

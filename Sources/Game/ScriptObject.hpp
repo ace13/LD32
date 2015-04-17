@@ -15,7 +15,7 @@ namespace Game
 	class ScriptObject : public Kunlaboro::Component
 	{
 	public:
-		explicit ScriptObject(asIObjectType* type = nullptr);
+		ScriptObject();
 		ScriptObject(const ScriptObject&) = delete;
 		~ScriptObject();
 
