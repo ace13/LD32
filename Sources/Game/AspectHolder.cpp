@@ -5,6 +5,8 @@
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include <climits>
+
 using namespace Game;
 AspectHolder::AspectHolder() : Kunlaboro::Component("Game.AspectHolder"),
 	mDirtied(false)

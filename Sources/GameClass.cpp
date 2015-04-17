@@ -43,8 +43,7 @@ int GameClass::run()
 	Util::Timespan tickDuration = std::chrono::nanoseconds(1000000000 / mTickRate);
 
 	sf::Event ev;
-	Util::Timestamp lastFrame = Util::ClockImpl::now(),
-		lastChecked = Util::ClockImpl::now() + std::chrono::milliseconds(500);
+	Util::Timestamp lastFrame = Util::ClockImpl::now();
 	Util::Timespan totalTime;
 	Kunlaboro::RequestId eventID = Kunlaboro::hash::hashString("Game.Event"),
 		drawID = Kunlaboro::hash::hashString("Game.Draw"),

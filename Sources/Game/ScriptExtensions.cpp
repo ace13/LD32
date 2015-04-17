@@ -90,7 +90,7 @@ namespace
 	template<typename T>
 	void create_easer(void* mem, EaseFuncs func, float d)
 	{
-		Math::Easer<T>::EaseFunc f;
+		typename Math::Easer<T>::EaseFunc f;
 
 		switch (func)
 		{
