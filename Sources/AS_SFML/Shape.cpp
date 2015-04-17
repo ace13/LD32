@@ -64,24 +64,36 @@ namespace
 		rt->draw(draw, shader);
 	}
 
+	void create_default_circle(void* mem)
+	{
+		new (mem)sf::CircleShape();
+	}
 	void create_circle(void* mem, float rad, unsigned int points)
 	{
-		new(mem)sf::CircleShape(rad, points);
+		new (mem)sf::CircleShape(rad, points);
 	}
 	void destroy_circle(sf::CircleShape* mem)
 	{
 		mem->~CircleShape();
 	}
 
+	void create_default_convex(void* mem)
+	{
+		new (mem)sf::ConvexShape();
+	}
 	void create_convex(void* mem, unsigned int points)
 	{
-		new(mem)sf::ConvexShape(points);
+		new (mem)sf::ConvexShape(points);
 	}
 	void destroy_convex(sf::ConvexShape* mem)
 	{
 		mem->~ConvexShape();
 	}
 
+	void create_default_rectangle(void* mem)
+	{
+		new (mem)sf::RectangleShape();
+	}
 	void create_rectangle(void* mem, const Math::Vec2& size)
 	{
 		new (mem)sf::RectangleShape(size);
@@ -90,6 +102,7 @@ namespace
 	{
 		mem->~RectangleShape();
 	}
+
 }
 
 void AS_SFML::priv::shapes(asIScriptEngine* eng)
@@ -102,25 +115,35 @@ void AS_SFML::priv::shapes(asIScriptEngine* eng)
 		"Circle", "Convex", "Rectangle"
 	};
 	
+	transformable_common<sf::CircleShape>("Circle", eng);
+	transformable_common<sf::ConvexShape>("Convex", eng);
+	transformable_common<sf::RectangleShape>("Rectangle", eng);
+
 	for (auto shape : shapes)
 	{
 		drawable_common(shape, eng);
 		shape_common(shape, eng);
 	}
 
+	r = eng->RegisterObjectBehaviour("Circle", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_circle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Circle", asBEHAVE_CONSTRUCT, "void f(float radius = 0, uint points = 30)", asFUNCTION(create_circle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Circle", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_circle), asCALL_CDECL_OBJFIRST);
+	r = eng->RegisterObjectMethod("Circle", "Circle& opAssign(Circle&in)", asMETHOD(sf::CircleShape, operator=), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Circle", "float get_Radius() const", asMETHOD(sf::CircleShape, getRadius), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Circle", "void set_Radius(float radius)", asMETHOD(sf::CircleShape, setRadius), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Circle", "void set_PointCount(uint count)", asMETHOD(sf::CircleShape, setPointCount), asCALL_THISCALL); asAssert(r);
 
+	r = eng->RegisterObjectBehaviour("Convex", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_convex), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Convex", asBEHAVE_CONSTRUCT, "void f(uint points = 0)", asFUNCTION(create_convex), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Convex", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_convex), asCALL_CDECL_OBJFIRST); asAssert(r);
+	r = eng->RegisterObjectMethod("Convex", "Convex& opAssign(Convex&in)", asMETHOD(sf::ConvexShape, operator=), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Convex", "void set_PointCount(uint count)", asMETHOD(sf::ConvexShape, setPointCount), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Convex", "void set_opIndex(uint id, ::Vec2&in point)", asMETHOD(sf::ConvexShape, setPoint), asCALL_THISCALL); asAssert(r);
 
+	r = eng->RegisterObjectBehaviour("Rectangle", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_rectangle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Rectangle", asBEHAVE_CONSTRUCT, "void f(::Vec2&in size = ::Vec2())", asFUNCTION(create_rectangle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Rectangle", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_rectangle), asCALL_CDECL_OBJFIRST); asAssert(r);
+	r = eng->RegisterObjectMethod("Rectangle", "Rectangle& opAssign(Rectangle&in)", asMETHOD(sf::RectangleShape, operator=), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Rectangle", "const ::Vec2& get_Size()", asMETHOD(sf::RectangleShape, getSize), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Rectangle", "void set_Size(::Vec2&in size)", asMETHOD(sf::RectangleShape, setSize), asCALL_THISCALL); asAssert(r);
 
@@ -130,19 +153,6 @@ void AS_SFML::priv::shapes(asIScriptEngine* eng)
 void AS_SFML::priv::drawable_common(const char* name, asIScriptEngine* eng)
 {
 	int r;
-
-	r = eng->RegisterObjectMethod(name, "const ::Vec2& get_Origin() const", asMETHOD(sf::Transformable, getOrigin), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void set_Origin(::Vec2&in origin)", asMETHODPR(sf::Transformable, setOrigin, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "const ::Vec2& get_Position() const", asMETHOD(sf::Transformable, getPosition), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void set_Position(::Vec2&in pos)", asMETHODPR(sf::Transformable, setPosition, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "const ::Vec2& get_Scale() const", asMETHOD(sf::Transformable, getScale), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void set_Scale(::Vec2&in scale)", asMETHODPR(sf::Transformable, setScale, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "float get_Rotation() const", asMETHOD(sf::Transformable, getRotation), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void set_Rotation(float ang)", asMETHOD(sf::Transformable, setRotation), asCALL_THISCALL); asAssert(r);
-
-	r = eng->RegisterObjectMethod(name, "void Move(::Vec2&in offest)", asMETHODPR(sf::Transformable, move, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void Scale(::Vec2&in factor)", asMETHODPR(sf::Transformable, scale, (const sf::Vector2f&), void), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod(name, "void Rotate(float ang)", asMETHOD(sf::Transformable, rotate), asCALL_THISCALL); asAssert(r);
 
 	std::string temp = eng->GetDefaultNamespace();
 	std::string ns = temp;
@@ -159,7 +169,7 @@ void AS_SFML::priv::drawable_common(const char* name, asIScriptEngine* eng)
 
 void AS_SFML::priv::shapes(CSerializer* ser)
 {
-	ser->AddUserType(new CSFMLType<sf::CircleShape>(), "sf::Shapes::Circle");
-	ser->AddUserType(new CSFMLType<sf::ConvexShape>(), "sf::Shapes::Convex");
-	ser->AddUserType(new CSFMLType<sf::RectangleShape>(), "sf::Shapes::Rectangle");
+	ser->AddUserType(new CSFMLType<sf::CircleShape>(), "Circle");
+	ser->AddUserType(new CSFMLType<sf::ConvexShape>(), "Convex");
+	ser->AddUserType(new CSFMLType<sf::RectangleShape>(), "Rectangle");
 }

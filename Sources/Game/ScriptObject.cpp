@@ -4,15 +4,27 @@
 
 using namespace Game;
 
-ScriptObject::ScriptObject(asIObjectType* type) : Kunlaboro::Component("Game.ScriptComponent"),
+// TODO: Register reprioritizeRequest
+// Something like:
+//
+// enum Func { Draw, DrawUI, Tick, Update };
+// void ChangePriority(Func, int);
+
+// Also, message passing. Maybe something like:
+// 
+// void SendMessage(string&in name, Dictionary&in data);
+// bool SendQuestion(string&in name, Dictionary&inout data); // Dictionary@ ?
+// 
+
+ScriptObject::ScriptObject(asIObjectType* type) : Kunlaboro::Component("Game.ScriptObject"),
 	mObj(nullptr)
 {
 	if (type)
 	{
 		mObj = reinterpret_cast<asIScriptObject*>(type->GetEngine()->CreateScriptObject(type));
-		ScriptManager::Singleton().notifyNewObject(this);
 	}
 
+	ScriptManager::Singleton().notifyNewObject(this);
 	std::memset(mFuncs, 0, sizeof(mFuncs));
 }
 
@@ -71,6 +83,9 @@ void ScriptObject::setObject(asIScriptObject* obj)
 	auto type = mObj->GetObjectType();
 	type->SetUserData(this, (uintptr_t)mObj);
 
+	if (getOwnerId() == 0)
+		return;
+
 	mFuncs[Func_Draw] = type->GetMethodByName("Draw");
 	mFuncs[Func_DrawUI] = type->GetMethodByName("DrawUI");
 	mFuncs[Func_Tick] = type->GetMethodByName("Tick");
@@ -100,9 +115,9 @@ void ScriptObject::updateFunc(const Util::Timespan& dt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 
+	ctx->Prepare(mFuncs[Func_Update]);
 	ctx->SetObject(mObj);
 	ctx->SetArgFloat(0, std::chrono::duration_cast<std::chrono::duration<float>>(dt).count());
-	ctx->Prepare(mFuncs[Func_Update]);
 
 	ctx->Execute();
 
@@ -112,9 +127,9 @@ void ScriptObject::tickFunc(const Util::Timespan& dt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 
+	ctx->Prepare(mFuncs[Func_Tick]);
 	ctx->SetObject(mObj);
 	ctx->SetArgFloat(0, std::chrono::duration_cast<std::chrono::duration<float>>(dt).count());
-	ctx->Prepare(mFuncs[Func_Tick]);
 
 	ctx->Execute();
 
@@ -124,11 +139,11 @@ void ScriptObject::drawFunc(sf::RenderTarget& rt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 
+	ctx->Prepare(mFuncs[Func_Draw]);
 	ctx->SetObject(mObj);
 	ctx->SetArgObject(0, &rt);
-	ctx->Prepare(mFuncs[Func_Draw]);
 
-	ctx->Execute();
+	int r = ctx->Execute();
 
 	mObj->GetEngine()->ReturnContext(ctx);
 }
@@ -136,9 +151,9 @@ void ScriptObject::drawUIFunc(sf::RenderTarget& rt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 
+	ctx->Prepare(mFuncs[Func_DrawUI]);
 	ctx->SetObject(mObj);
 	ctx->SetArgObject(0, &rt);
-	ctx->Prepare(mFuncs[Func_DrawUI]);
 
 	ctx->Execute();
 

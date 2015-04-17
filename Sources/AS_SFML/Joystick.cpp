@@ -5,9 +5,12 @@ struct JoystickImpl
 {
 	unsigned int ID;
 
+	JoystickImpl() : ID(0) { }
 	JoystickImpl(unsigned int id) : ID(id) { }
 	JoystickImpl(const JoystickImpl&) = default;
 	~JoystickImpl() = default;
+
+	JoystickImpl& operator=(const JoystickImpl&) = default;
 
 	bool connected() const
 	{
@@ -49,6 +52,7 @@ struct JoystickImpl
 namespace
 {
 	void create_joystick(void* mem, unsigned int id) { new (mem)JoystickImpl(id); }
+	void create_default_joystick(void* mem) { new (mem)JoystickImpl(); }
 	void destroy_joystick(JoystickImpl* mem) { mem->~JoystickImpl(); }
 
 #ifndef AS_SUPPORT_VALRET
@@ -87,8 +91,12 @@ void AS_SFML::priv::joystick(asIScriptEngine* eng)
 
 	r = eng->RegisterObjectType("Joystick", sizeof(JoystickImpl), asOBJ_VALUE | asGetTypeTraits<JoystickImpl>()); asAssert(r);
 	r = eng->RegisterObjectProperty("Joystick", "uint ID", asOFFSET(JoystickImpl, ID)); asAssert(r);
+
+	r = eng->RegisterObjectBehaviour("Joystick", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_joystick), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Joystick", asBEHAVE_CONSTRUCT, "void f(uint id)", asFUNCTION(create_joystick), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Joystick", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_joystick), asCALL_CDECL_OBJFIRST); asAssert(r);
+
+	r = eng->RegisterObjectMethod("Joystick", "Joystick& opAssign(Joystick&in)", asMETHOD(JoystickImpl, operator=), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectMethod("Joystick", "bool get_Connected() const", asMETHOD(JoystickImpl, connected), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Joystick", "uint get_AxisCount() const", asMETHOD(JoystickImpl, axisCount), asCALL_THISCALL); asAssert(r);
@@ -107,6 +115,6 @@ void AS_SFML::priv::joystick(asIScriptEngine* eng)
 
 void AS_SFML::priv::joystick(CSerializer* ser)
 {
-	ser->AddUserType(new CSFMLType<JoystickImpl>(), "sf::Joystick");
-	ser->AddUserType(new CSFMLType<sf::Joystick::Identification>(), "sf::Joystick::Identification");
+	ser->AddUserType(new CSFMLType<JoystickImpl>(), "Joystick");
+	ser->AddUserType(new CSFMLType<sf::Joystick::Identification>(), "Identification");
 }

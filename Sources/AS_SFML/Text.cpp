@@ -6,6 +6,11 @@
 
 namespace
 {
+	void create_default_text(void* mem)
+	{
+		new (mem)sf::Text("", Util::getDefaultFont());
+	}
+
 	void create_text(void* mem, const std::string& text, unsigned int size)
 	{
 		new (mem)sf::Text(text, Util::getDefaultFont(), size);
@@ -59,6 +64,7 @@ void AS_SFML::priv::text(asIScriptEngine* eng)
 {
 	int r;
 
+	transformable_common<sf::Text>("Text", eng);
 	drawable_common("Text", eng);
 
 	r = eng->SetDefaultNamespace("sf::Text"); asAssert(r);
@@ -72,8 +78,11 @@ void AS_SFML::priv::text(asIScriptEngine* eng)
 
 	r = eng->SetDefaultNamespace("sf"); asAssert(r);
 
+	r = eng->RegisterObjectBehaviour("Text", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_text), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Text", asBEHAVE_CONSTRUCT, "void f(::string&in text, uint charsize = 30)", asFUNCTION(create_text), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Text", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_text), asCALL_CDECL_OBJFIRST); asAssert(r);
+
+	r = eng->RegisterObjectMethod("Text", "Text& opAssign(Text&in)", asMETHOD(sf::Text, operator=), asCALL_THISCALL); asAssert(r);
 	
 	r = eng->RegisterObjectMethod("Text", "uint get_CharacterSize() const", asMETHOD(sf::Text, getCharacterSize), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Text", "void set_CharacterSize(uint size)", asMETHOD(sf::Text, setCharacterSize), asCALL_THISCALL); asAssert(r);
@@ -108,5 +117,5 @@ void AS_SFML::priv::text(asIScriptEngine* eng)
 
 void AS_SFML::priv::text(CSerializer* ser)
 {
-	ser->AddUserType(new CSFMLType<sf::Text>(), "sf::Text");
+	ser->AddUserType(new CSFMLType<sf::Text>(), "Text");
 }

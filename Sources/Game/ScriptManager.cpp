@@ -7,6 +7,8 @@
 #include <serializer/serializer.h>
 
 #include <algorithm>
+#include <fstream>
+#include <vector>
 
 #ifdef _WIN32
 #include <direct.h>
@@ -97,6 +99,18 @@ ScriptManager::~ScriptManager()
 
 bool ScriptManager::loadScriptFromFile(const std::string& file)
 {
+	std::ifstream ifs(file.c_str());
+
+	ifs.seekg(0, std::ios::end);
+	size_t len = ifs.tellg();
+	ifs.seekg(0, std::ios::beg);
+
+	std::vector<char> data(len, 0);
+	ifs.read(&data[0], len);
+
+	if (!ifs.bad())
+		return loadScriptFromMemory(file, &data[0], strlen(&data[0]));
+
 	return false;
 }
 bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* data, size_t size)
@@ -135,9 +149,12 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 
 		serial.Store(oldMod);
 
-		oldMod->LoadByteCode(&store);
+		oldMod->Discard();
 
-		serial.Restore(oldMod);
+		mod = mEngine->GetModule(file.c_str(), asGM_ALWAYS_CREATE);
+		mod->LoadByteCode(&store);
+
+		serial.Restore(mod);
 		for (auto& obj : mObjects)
 		{
 			auto asObj = obj->getObject();
@@ -145,6 +162,8 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 			if (asObj->GetObjectType()->GetModule() == oldMod)
 				obj->setObject((asIScriptObject*)serial.GetPointerToRestoredObject(asObj));
 		}
+
+		mEngine->GarbageCollect(asGC_FULL_CYCLE | asGC_DESTROY_GARBAGE);
 	}
 	else
 	{
@@ -158,7 +177,7 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 		mLoadedScripts[file].DirectlyLoaded = true;
 	}
 
-	return false;
+	return true;
 }
 
 void ScriptManager::defineWord(const std::string& word)
@@ -195,6 +214,19 @@ void ScriptManager::checkForUpdates()
 	}
 }
 
+ScriptObject* ScriptManager::createObject(const std::string& file, const std::string& name, Kunlaboro::EntitySystem& es)
+{
+	std::string path = normalizePath(file);
+	auto obj = static_cast<Game::ScriptObject*>(es.createComponent("Game.ScriptObject"));
+
+	auto mod = mEngine->GetModule(path.c_str());
+	auto type = mod->GetObjectTypeByName(name.c_str());
+
+	if (type)
+		obj->setObject((asIScriptObject*)mEngine->CreateScriptObject(type));
+
+	return obj;
+}
 
 void ScriptManager::notifyNewObject(ScriptObject* obj)
 {

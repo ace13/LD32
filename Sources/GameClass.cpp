@@ -1,5 +1,6 @@
 #include "GameClass.hpp"
 #include "Game/ScriptManager.hpp"
+#include "Game/ScriptObject.hpp"
 #include "Game/Statistics.hpp"
 #include "Util/Time.hpp"
 
@@ -14,6 +15,7 @@ namespace
 void GameClass::RegisterComponents(Kunlaboro::EntitySystem& es)
 {
 	es.registerComponent<Game::Statistics>("Game.Statistics");
+	es.registerComponent<Game::ScriptObject>("Game.ScriptObject");
 }
 
 GameClass& GameClass::Singleton()

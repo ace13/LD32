@@ -10,6 +10,8 @@
 #include <string>
 #include <unordered_map>
 
+namespace Kunlaboro { class EntitySystem; }
+
 namespace Game
 {
 	class ScriptObject;
@@ -28,6 +30,8 @@ namespace Game
 
 		void defineWord(const std::string& word);
 		void checkForUpdates();
+
+		ScriptObject* createObject(const std::string& file, const std::string& name, Kunlaboro::EntitySystem& es);
 
 	private:
 		struct ScriptFileData

@@ -82,6 +82,11 @@ namespace
 	};
 
 	template<typename T>
+	void create_default_easer(void* mem)
+	{
+		new (mem)Math::Easer<T>(Math::Eases::easeInCubic<T>, 1);
+	}
+	template<typename T>
 	void create_easer(void* mem, EaseFuncs func, float d)
 	{
 		Math::Easer<T>::EaseFunc f;
@@ -135,6 +140,7 @@ namespace
 
 		r = eng->RegisterObjectType(name, sizeof(Math::Easer<T>), asOBJ_VALUE | asGetTypeTraits<Math::Easer<T>>()); asAssert(r);
 
+		r = eng->RegisterObjectBehaviour(name, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_easer<T>), asCALL_CDECL_OBJFIRST); asAssert(r);
 		r = eng->RegisterObjectBehaviour(name, asBEHAVE_CONSTRUCT, "void f(EaseFunc, float)", asFUNCTION(create_easer<T>), asCALL_CDECL_OBJFIRST); asAssert(r);
 		r = eng->RegisterObjectBehaviour(name, asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_easer<T>), asCALL_CDECL_OBJFIRST); asAssert(r);
 
@@ -227,12 +233,22 @@ namespace
 	}
 #endif
 
+	void create_default_vec2(void* mem) { new (mem)Math::Vec2(); }
+	void create_vec2(void* mem, float x, float y) { new (mem)Math::Vec2(x, y); }
+	void destroy_vec2(Math::Vec2* mem) { mem->~Vec2(); }
+
 	void vec2(asIScriptEngine* eng)
 	{
 		int r;
 
 		r = eng->RegisterObjectProperty("Vec2", "float X", asOFFSET(Math::Vec2, x)); asAssert(r);
 		r = eng->RegisterObjectProperty("Vec2", "float Y", asOFFSET(Math::Vec2, y)); asAssert(r);
+
+		r = eng->RegisterObjectBehaviour("Vec2", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_vec2), asCALL_CDECL_OBJFIRST); asAssert(r);
+		r = eng->RegisterObjectBehaviour("Vec2", asBEHAVE_CONSTRUCT, "void f(float x, float y)", asFUNCTION(create_vec2), asCALL_CDECL_OBJFIRST); asAssert(r);
+		r = eng->RegisterObjectBehaviour("Vec2", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_vec2), asCALL_CDECL_OBJFIRST); asAssert(r);
+
+		r = eng->RegisterObjectMethod("Vec2", "Vec2& opAssign(Vec2&in)", asMETHOD(Math::Vec2, operator=), asCALL_THISCALL); asAssert(r);
 
 		r = eng->RegisterObjectMethod("Vec2", "float get_Angle() const", asMETHOD(Math::Vec2, getAngle), asCALL_THISCALL); asAssert(r);
 		r = eng->RegisterObjectMethod("Vec2", "float get_Length() const", asMETHOD(Math::Vec2, getLength), asCALL_THISCALL); asAssert(r);
@@ -262,7 +278,7 @@ namespace
 		int r;
 
 		r = eng->RegisterObjectType("Rect", sizeof(Math::Rect), asOBJ_VALUE | asOBJ_POD | asGetTypeTraits<Math::Rect>()); asAssert(r);
-		r = eng->RegisterObjectType("Vec2", sizeof(Math::Vec2), asOBJ_VALUE | asOBJ_POD | asGetTypeTraits<Math::Vec2>()); asAssert(r);
+		r = eng->RegisterObjectType("Vec2", sizeof(Math::Vec2), asOBJ_VALUE | asGetTypeTraits<Math::Vec2>()); asAssert(r);
 
 		rect(eng);
 		vec2(eng);
