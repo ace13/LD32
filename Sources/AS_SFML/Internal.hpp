@@ -49,6 +49,7 @@ namespace AS_SFML
 		void joystick(CSerializer*);
 		void shapes(CSerializer*);
 		void sprite(CSerializer*);
+		void sound(CSerializer*);
 		void text(CSerializer*);
 		void view(CSerializer*);
 

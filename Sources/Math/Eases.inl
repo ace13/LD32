@@ -16,6 +16,11 @@ namespace Math
 	template<typename T>
 	inline T Easer<T>::ease(const T& start, const T& end, float time)
 	{
+		if (time <= 0)
+			return start;
+		else if (time >= mDuration)
+			return end;
+
 		return mEaser(start, end, time, mDuration);
 	}
 

@@ -78,7 +78,7 @@ FileWatcher::~FileWatcher()
 
 bool FileWatcher::pollChange(std::string& file)
 {
-	if (ClockImpl::now() - mLastCheck > std::chrono::seconds(1))
+	if (ClockImpl::now() - mLastCheck > std::chrono::milliseconds(250))
 		tick();
 
 	if (mChanges.empty())

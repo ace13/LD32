@@ -3,7 +3,34 @@
 #include <Game/ScriptObject.hpp>
 #include <Util/Path.hpp>
 
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Audio/Music.hpp>
+
 #include <ctime>
+
+sf::SoundBuffer* getSound(const std::string& name)
+{
+	static std::unordered_map<std::string, sf::SoundBuffer*> bufs;
+	if (bufs.count(name) == 0)
+	{
+		bufs[name] = new sf::SoundBuffer();
+		bufs[name]->loadFromFile(name);
+	}
+
+	return bufs[name];
+}
+
+sf::Music* getMusic(const std::string& name)
+{
+	static std::unordered_map<std::string, sf::Music*> bufs;
+	if (bufs.count(name) == 0)
+	{
+		bufs[name] = new sf::Music();
+		bufs[name]->openFromFile(name);
+	}
+
+	return bufs[name];
+}
 
 int main(int argc, char** argv)
 {
@@ -31,6 +58,8 @@ int main(int argc, char** argv)
 	}
 
 	sm.getEngine()->RegisterGlobalProperty("const float TIME_LEFT", &timeLeft);
+	sm.getEngine()->RegisterGlobalFunction("sf::SoundBuf@ GetSound(string&in)", asFUNCTION(getSound), asCALL_CDECL);
+	sm.getEngine()->RegisterGlobalFunction("sf::Music@ GetMusic(string&in)", asFUNCTION(getMusic), asCALL_CDECL);
 
 	GameClass::RegisterComponents(es);
 

@@ -3,6 +3,7 @@
 #include <Util/DefaultFont.hpp>
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio/Sound.hpp>
 
 void registerTypes(asIScriptEngine*);
 
@@ -29,7 +30,7 @@ bool AS_SFML::addSFMLSerializers(CSerializer* serializer)
 	typedef void(*regfunc)(CSerializer*);
 	regfunc parts[] = {
 		priv::color, priv::joystick, priv::shapes, priv::sprite,
-		priv::text, priv::view
+		priv::sound, priv::text, priv::view
 	};
 
 	for (auto& func : parts)
@@ -55,7 +56,8 @@ void registerTypes(asIScriptEngine* eng)
 	r = eng->RegisterObjectType("Music", 0, asOBJ_REF | asOBJ_NOCOUNT); asAssert(r);
 	r = eng->RegisterObjectType("Renderer", 0, asOBJ_REF | asOBJ_NOCOUNT); asAssert(r);
 	r = eng->RegisterObjectType("Shader", 0, asOBJ_REF | asOBJ_NOCOUNT); asAssert(r);
-	r = eng->RegisterObjectType("Sound", 0, asOBJ_REF | asOBJ_NOCOUNT); asAssert(r);
+	r = eng->RegisterObjectType("Sound", sizeof(sf::Sound), asOBJ_VALUE | asGetTypeTraits<sf::Sound>()); asAssert(r);
+	r = eng->RegisterObjectType("SoundBuf", 0, asOBJ_REF | asOBJ_NOCOUNT); asAssert(r);
 	r = eng->RegisterObjectType("Sprite", sizeof(sf::Sprite), asOBJ_VALUE | asGetTypeTraits<sf::Sprite>()); asAssert(r);
 	r = eng->RegisterObjectType("Text", sizeof(sf::Text), asOBJ_VALUE | asGetTypeTraits<sf::Text>()); asAssert(r);
 	r = eng->RegisterObjectType("Texture", 0, asOBJ_REF | asOBJ_NOCOUNT); asAssert(r);
