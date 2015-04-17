@@ -59,7 +59,7 @@ int GameClass::run()
 		Util::Timespan frameTime = now - lastFrame;
 
 		auto count = frameTime.count();
-		frameTime = Util::Timespan(std::max(0ll, std::min(count, 50000000ll)));
+		frameTime = Util::Timespan(std::max(0l, std::min((long)count, 50000000l)));
 
 		totalTime += frameTime;
 
