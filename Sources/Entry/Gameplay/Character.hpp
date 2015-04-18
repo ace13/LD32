@@ -26,7 +26,7 @@ namespace Gameplay
 		Kunlaboro::Optional<Math::Vec2> getPosition();
 		Kunlaboro::Optional<float> getRadius();
 
-		float mRadius;
+		float mRadius, mHealth, mSanity, mMaxSanity;
 		Math::Vec2 mPosition;
 	};
 }
