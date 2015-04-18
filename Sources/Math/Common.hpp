@@ -1,5 +1,7 @@
 #pragma once
 
+class asIScriptEngine;
+
 namespace Math
 {
 
@@ -14,6 +16,8 @@ namespace Math
 	extern void simpleEase(T& val, const T& target);
 	extern float randomFloat(float min, float max);
 	extern int randomInt(int min, int max);
+
+	extern void registerScripts(asIScriptEngine* eng);
 
 }
 

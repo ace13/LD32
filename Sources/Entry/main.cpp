@@ -58,10 +58,6 @@ int main(int argc, char** argv)
 	es.addComponent(eid, "Fallacy.Time");
 
 	eid = es.createEntity();
-	auto obj = sm.createObject("Scripts/main.as", "HudTest", es);
-	es.addComponent(eid, obj);
-
-	eid = es.createEntity();
 	es.addComponent(eid, sm.createObject("Scripts/player.as", "Player", es));
 	es.addComponent(eid, "Fallacy.Character");
 
