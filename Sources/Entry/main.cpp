@@ -1,42 +1,21 @@
+#include "FallacyTime.hpp"
+#include "Menu.hpp"
+#include "Resources.hpp"
+
 #include <GameClass.hpp>
 #include <Game/ScriptManager.hpp>
 #include <Game/ScriptObject.hpp>
 #include <Util/Path.hpp>
 
-#include <SFML/Audio/SoundBuffer.hpp>
-#include <SFML/Audio/Music.hpp>
-
 #include <ctime>
-
-sf::SoundBuffer* getSound(const std::string& name)
-{
-	static std::unordered_map<std::string, sf::SoundBuffer*> bufs;
-	if (bufs.count(name) == 0)
-	{
-		bufs[name] = new sf::SoundBuffer();
-		bufs[name]->loadFromFile(name);
-	}
-
-	return bufs[name];
-}
-
-sf::Music* getMusic(const std::string& name)
-{
-	static std::unordered_map<std::string, sf::Music*> bufs;
-	if (bufs.count(name) == 0)
-	{
-		bufs[name] = new sf::Music();
-		bufs[name]->openFromFile(name);
-	}
-
-	return bufs[name];
-}
 
 int main(int argc, char** argv)
 {
 	Util::setSaneCWD();
 
 	Kunlaboro::EntitySystem es;
+	es.registerComponent<Menu>("Fallacy.Menu");
+	es.registerComponent<FallacyTimeController>("Fallacy.Time");
 	GameClass game(es);
 	auto& sm = Game::ScriptManager::Singleton();
 
@@ -57,9 +36,14 @@ int main(int argc, char** argv)
 		timeLeft = std::chrono::duration_cast<std::chrono::duration<float>>(targetTime - std::chrono::system_clock::now()).count();
 	}
 
-	sm.getEngine()->RegisterGlobalProperty("const float TIME_LEFT", &timeLeft);
-	sm.getEngine()->RegisterGlobalFunction("sf::SoundBuf@ GetSound(string&in)", asFUNCTION(getSound), asCALL_CDECL);
-	sm.getEngine()->RegisterGlobalFunction("sf::Music@ GetMusic(string&in)", asFUNCTION(getMusic), asCALL_CDECL);
+	auto eng = sm.getEngine();
+	eng->RegisterGlobalProperty("const float TIME_LEFT", &timeLeft);
+	eng->RegisterGlobalProperty("const float FT", &FallacyTimeController::FallacyTime);
+
+	eng->SetDefaultNamespace("Resources");
+	eng->RegisterGlobalFunction("sf::SoundBuf@ GetSound(string&in)", asFUNCTION(Resources::getSound), asCALL_CDECL);
+	eng->RegisterGlobalFunction("sf::Music@ GetMusic(string&in)", asFUNCTION(Resources::getMusic), asCALL_CDECL);
+	eng->SetDefaultNamespace("");
 
 	GameClass::RegisterComponents(es);
 
@@ -69,6 +53,7 @@ int main(int argc, char** argv)
 	auto eid = es.createEntity();
 	es.addComponent(eid, "Game.Statistics");
 	es.addComponent(eid, "Game.AspectHolder");
+	es.addComponent(eid, "Fallacy.Time");
 
 	eid = es.createEntity();
 	auto obj = sm.createObject("Scripts/main.as", "BouncyBall", es);

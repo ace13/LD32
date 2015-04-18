@@ -56,4 +56,4 @@ source_group("Source Files\\Script\\JIT" FILES ${AngelscriptJIT_SOURCES})
 add_library(LD32_Core STATIC ${HEADERS} ${SOURCES})
 
 add_subdirectory(AS_SFML)
-add_subdirectory(Warmup)
+add_subdirectory(Entry)

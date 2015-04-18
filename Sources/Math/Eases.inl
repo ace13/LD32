@@ -21,7 +21,7 @@ namespace Math
 		else if (time >= mDuration)
 			return end;
 
-		return mEaser(start, end, time, mDuration);
+		return mEaser(start, end - start, time, mDuration);
 	}
 
 	template<typename T>
