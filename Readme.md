@@ -1,7 +1,10 @@
-Ludum Dare #32
+Ludum Dare #32 - An Unconventional Weapon
 ==============
 
-Here's where my coming Ludum Dare #32 entry will be, at the moment I'm just working on a basic framework to speed up the main development.
+Here's the code for my LD32 entry, a twin-stick shouter.
+
+## Fallacies, TD
+
 
 Dependencies
 ------------
