@@ -46,6 +46,9 @@ namespace
 		auto ret = CScriptArray::Create(obj->GetEngine()->GetObjectTypeByDecl("array<Character@>"));
 		for (auto& val : list)
 		{
+			if (!val)
+				continue;
+
 			auto dirCopy = dir;
 			auto diff = (val->getPosition() - pos);
 			dirCopy.setLength(diff.getLength());
