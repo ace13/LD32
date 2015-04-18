@@ -1,17 +1,17 @@
-#include "ScriptObject.hpp"
-#include "ScriptManager.hpp"
+#include "ScriptWeapon.hpp"
+#include <Game/ScriptManager.hpp>
 #include <angelscript.h>
 
 using namespace Game;
 
-ScriptObject::ScriptObject() : Kunlaboro::Component("Game.ScriptObject"),
+ScriptWeapon::ScriptWeapon() : Kunlaboro::Component("Fallacy.ScriptWeapon"),
 	mObj(nullptr)
 {
 	ScriptManager::Singleton().notifyNewObject(this);
 	std::memset(mFuncs, 0, sizeof(mFuncs));
 }
 
-ScriptObject::~ScriptObject()
+ScriptWeapon::~ScriptWeapon()
 {
 	ScriptManager::Singleton().notifyObjectRemoved(this);
 
@@ -22,10 +22,10 @@ ScriptObject::~ScriptObject()
 	}
 }
 
-void ScriptObject::addedToEntity()
+void ScriptWeapon::addedToEntity()
 {
-	requestMessage("GetObject", &ScriptObject::getObjectMsg, true);
-	requestMessage("SetObject", &ScriptObject::setObject, true);
+	requestMessage("GetObject", &ScriptWeapon::getObjectMsg, true);
+	requestMessage("SetObject", &ScriptWeapon::setObject, true);
 
 	if (!mObj)
 		return;
@@ -38,16 +38,16 @@ void ScriptObject::addedToEntity()
 	mFuncs[Func_Update] = type->GetMethodByName("Update");
 
 	if (mFuncs[Func_Draw])
-		requestMessage("Game.Draw", &ScriptObject::drawFunc);
+		requestMessage("Game.Draw", &ScriptWeapon::drawFunc);
 	if (mFuncs[Func_DrawUI])
-		requestMessage("Game.DrawUI", &ScriptObject::drawUIFunc);
+		requestMessage("Game.DrawUI", &ScriptWeapon::drawUIFunc);
 	if (mFuncs[Func_Tick])
-		requestMessage("Game.Tick", &ScriptObject::tickFunc);
+		requestMessage("Game.Tick", &ScriptWeapon::tickFunc);
 	if (mFuncs[Func_Update])
-		requestMessage("Game.Update", &ScriptObject::updateFunc);
+		requestMessage("Game.Update", &ScriptWeapon::updateFunc);
 }
 
-void ScriptObject::setObject(asIScriptObject* obj)
+void ScriptWeapon::setObject(asIScriptObject* obj)
 {
 	if (mObj)
 	{
@@ -78,26 +78,26 @@ void ScriptObject::setObject(asIScriptObject* obj)
 	mFuncs[Func_Update] = type->GetMethodByName("Update");
 
 	if (mFuncs[Func_Draw])
-		requestMessage("Game.Draw", &ScriptObject::drawFunc);
+		requestMessage("Game.Draw", &ScriptWeapon::drawFunc);
 	if (mFuncs[Func_DrawUI])
-		requestMessage("Game.DrawUI", &ScriptObject::drawUIFunc);
+		requestMessage("Game.DrawUI", &ScriptWeapon::drawUIFunc);
 	if (mFuncs[Func_Tick])
-		requestMessage("Game.Tick", &ScriptObject::tickFunc);
+		requestMessage("Game.Tick", &ScriptWeapon::tickFunc);
 	if (mFuncs[Func_Update])
-		requestMessage("Game.Update", &ScriptObject::updateFunc);
+		requestMessage("Game.Update", &ScriptWeapon::updateFunc);
 }
 
-asIScriptObject* ScriptObject::getObject()
+asIScriptObject* ScriptWeapon::getObject()
 {
 	return mObj;
 }
 
-Kunlaboro::Optional<asIScriptObject*> ScriptObject::getObjectMsg()
+Kunlaboro::Optional<asIScriptObject*> ScriptWeapon::getObjectMsg()
 {
 	return mObj;
 }
 
-void ScriptObject::updateFunc(const Util::Timespan& dt)
+void ScriptWeapon::updateFunc(const Util::Timespan& dt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 
@@ -109,7 +109,7 @@ void ScriptObject::updateFunc(const Util::Timespan& dt)
 
 	mObj->GetEngine()->ReturnContext(ctx);
 }
-void ScriptObject::tickFunc(const Util::Timespan& dt)
+void ScriptWeapon::tickFunc(const Util::Timespan& dt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 
@@ -121,7 +121,7 @@ void ScriptObject::tickFunc(const Util::Timespan& dt)
 
 	mObj->GetEngine()->ReturnContext(ctx);
 }
-void ScriptObject::drawFunc(sf::RenderTarget& rt)
+void ScriptWeapon::drawFunc(sf::RenderTarget& rt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 
@@ -133,7 +133,7 @@ void ScriptObject::drawFunc(sf::RenderTarget& rt)
 
 	mObj->GetEngine()->ReturnContext(ctx);
 }
-void ScriptObject::drawUIFunc(sf::RenderTarget& rt)
+void ScriptWeapon::drawUIFunc(sf::RenderTarget& rt)
 {
 	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
 

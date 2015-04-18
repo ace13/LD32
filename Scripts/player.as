@@ -9,6 +9,12 @@ class Player
 
 	void Tick(float dt)
 	{
+		if (char is null)
+		{
+			@char = GetCharacter();
+			char.Radius = 16;
+		}
+
 		Vec2 walkDir, aimDir;
 
 		if (joy.Connected)
@@ -37,24 +43,15 @@ class Player
 
 		vel += (walkDir - vel) * .1 * FT;
 
-		shouting = aimDir.Length > 25;
+		bool shouting = aimDir.Length > 25;
 		if (shouting)
-		{
-			wepon.Color = sf::Colors::White;
-			wepon.Rotation = aimDir.Angle * (180 / PI);
-
-			float ang = aimDir.Angle;
-			if (ang < -HALF_PI || ang > HALF_PI)
-				wepon.Scale = Vec2(1, -1);
-			else
-				wepon.Scale = Vec2(1, 1);
-		}
+			char.AimVec = aimDir.Normalized;
 		else
-			wepon.Color = sf::Colors::Transparent;
+			char.AimVec = Vec2();
 
 		pos += vel * dt * FT;
-		UpdateCharacter(pos, 16);
 
+		char.Position = pos;
 	}
 
 	void Update(float dt)
@@ -70,17 +67,6 @@ class Player
 
 	void Draw(sf::Renderer@ rt)
 	{
-		if (shouting)
-		{
-			wepon.String = msg;
-			Rect b = wepon.LocalBounds;
-			wepon.Origin = Vec2(8, b.Size.Y / 2.f + 8);
-
-			wepon.Position = pos;
-
-			rt.Draw(wepon);
-		}
-
 		sf::View gameView = rt.View;
 		gameView.Center = gameView.Center + (pos - gameView.Center) * .001 * FT;
 		rt.View = gameView;
@@ -158,12 +144,11 @@ class Player
 		rt.Draw(rect);
 	}
 
+	private Character@ char;
+
 	private float time;
 	private string msg;
 	private sf::Joystick joy;
 	private Vec2 pos, vel;
-
-	private sf::Text wepon;
-	private bool shouting;
 
 }

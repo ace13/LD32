@@ -8,6 +8,7 @@ set(HEADERS
 
 	Menu.hpp
 	Resources.hpp
+	ScriptWeapon.hpp
 )
 set(SOURCES
 	Gameplay/Character.cpp
@@ -19,6 +20,7 @@ set(SOURCES
 
 	Menu.cpp
 	Resources.cpp
+	ScriptWeapon.cpp
 
 	main.cpp
 )

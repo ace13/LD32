@@ -27,7 +27,7 @@ void Enemy::addedToEntity()
 			unrequestMessage("Game.Tick");
 		}
 	});
-	requestMessage("Fallacies.GetEnemies", &Enemy::getEnemies);
+	requestMessage("Fallacy.GetEnemies", &Enemy::getEnemies);
 }
 
 void Enemy::tick(const Util::Timespan& dt)
@@ -45,7 +45,7 @@ void Enemy::tick(const Util::Timespan& dt)
 	// Throw abuse at player when close enough
 }
 
-void Enemy::getEnemies(std::list<Enemy*>& enemies)
+void Enemy::getEnemies(std::list<Character*>& enemies)
 {
-	enemies.push_back(this);
+	enemies.push_back(mChar);
 }

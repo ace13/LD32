@@ -5,6 +5,8 @@
 #include <Math/Vec2.hpp>
 #include <Util/Time.hpp>
 
+#include <unordered_map>
+
 namespace Gameplay
 {
 
@@ -16,14 +18,15 @@ namespace Gameplay
 		public:
 			static Manager& Singleton();
 
-			Game::ScriptObject* createProjectile(const std::string& name);
-			Game::ScriptObject* createWeapon(const std::string& name);
+			Game::ScriptObject* createProjectile(Kunlaboro::EntitySystem& es, const std::string& name);
+			Game::ScriptObject* createWeapon(Kunlaboro::EntitySystem& es, const std::string& name);
 
 			void addProjectile(const std::string& name, asIObjectType* obj);
 			void addWeapon(const std::string& name, asIObjectType* obj);
 
 		private:
-
+			std::unordered_map<std::string, asIObjectType*> mProjectiles;
+			std::unordered_map<std::string, asIObjectType*> mWeapons;
 		};
 
 		class Missile : public Kunlaboro::Component

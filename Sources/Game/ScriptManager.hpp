@@ -10,7 +10,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace Kunlaboro { class EntitySystem; }
+namespace Kunlaboro { class Component; class EntitySystem; }
 
 namespace Game
 {
@@ -35,6 +35,9 @@ namespace Game
 		ScriptObject* createObject(const std::string& file, const std::string& name, Kunlaboro::EntitySystem& es);
 		asIScriptEngine* getEngine();
 
+		void notifyNewObject(Kunlaboro::Component* obj);
+		void notifyObjectRemoved(Kunlaboro::Component* obj);
+
 	private:
 		struct ScriptFileData
 		{
@@ -49,13 +52,10 @@ namespace Game
 
 		void notifyIncluded(const std::string& file, const std::string& from);
 
-		void notifyNewObject(ScriptObject* obj);
-		void notifyObjectRemoved(ScriptObject* obj);
-
 		asIScriptEngine* mEngine;
 		CScriptBuilder mBuilder;
 		Util::FileWatcher mWatcher;
-		std::list<ScriptObject*> mObjects;
+		std::list<Kunlaboro::Component*> mObjects;
 		std::unordered_map<std::string, ScriptFileData> mLoadedScripts;
 		std::unordered_map<std::string, void(*)(asIObjectType*)> mMetaCallbacks;
 

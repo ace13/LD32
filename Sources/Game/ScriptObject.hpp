@@ -1,5 +1,6 @@
 #pragma once
 
+#include <AS_SFML/Common.hpp>
 #include <Util/Time.hpp>
 #include <Kunlaboro/Component.hpp>
 
@@ -23,8 +24,7 @@ namespace Game
 
 		void setObject(asIScriptObject*);
 		asIScriptObject* getObject();
-		const asIScriptObject* getObject() const;
-
+		
 	private:
 		enum FuncType
 		{
@@ -36,6 +36,7 @@ namespace Game
 			Func_COUNT
 		};
 
+		Kunlaboro::Optional<asIScriptObject*> getObjectMsg();
 		void updateFunc(const Util::Timespan& dt);
 		void tickFunc(const Util::Timespan& dt);
 		void drawFunc(sf::RenderTarget&);

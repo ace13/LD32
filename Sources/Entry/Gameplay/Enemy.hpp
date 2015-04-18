@@ -19,7 +19,7 @@ namespace Gameplay
 
 	private:
 		void tick(const Util::Timespan& dt);
-		void getEnemies(std::list<Enemy*>& enemies);
+		void getEnemies(std::list<Character*>& enemies);
 
 		Character* mChar;
 	};

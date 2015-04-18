@@ -122,7 +122,10 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 
 		for (auto& obj : mObjects)
 		{
-			auto asObj = obj->getObject();
+			asIScriptObject* asObj;
+
+			Kunlaboro::Optional<asIScriptObject*> reply = obj->sendMessage<asIScriptObject*>("GetObject");
+			asObj = *reply;
 
 			if (asObj->GetObjectType()->GetModule() == oldMod)
 				serial.AddExtraObjectToStore(asObj);
@@ -149,10 +152,15 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 		serial.Restore(mod);
 		for (auto& obj : mObjects)
 		{
-			auto asObj = obj->getObject();
+			asIScriptObject* asObj;
+
+			Kunlaboro::Optional<asIScriptObject*> reply = obj->sendMessage<asIScriptObject*>("GetObject");
+			asObj = *reply;
 
 			if (asObj->GetObjectType()->GetModule() == oldMod)
-				obj->setObject((asIScriptObject*)serial.GetPointerToRestoredObject(asObj));
+			{
+				obj->sendMessage<void, asIScriptObject*>("SetObject", ((asIScriptObject*)serial.GetPointerToRestoredObject(asObj)));
+			}
 		}
 
 		mEngine->GarbageCollect(asGC_FULL_CYCLE | asGC_DESTROY_GARBAGE);
@@ -245,12 +253,12 @@ asIScriptEngine* ScriptManager::getEngine()
 	return mEngine;
 }
 
-void ScriptManager::notifyNewObject(ScriptObject* obj)
+void ScriptManager::notifyNewObject(Kunlaboro::Component* obj)
 {
 	mObjects.push_back(obj);
 }
 
-void ScriptManager::notifyObjectRemoved(ScriptObject* obj)
+void ScriptManager::notifyObjectRemoved(Kunlaboro::Component* obj)
 {
 	auto it = std::find(mObjects.begin(), mObjects.end(), obj);
 	if (it != mObjects.end())
