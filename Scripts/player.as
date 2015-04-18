@@ -35,7 +35,7 @@ class Player
 		if (walkDir.Length < 25)
 			walkDir = Vec2();
 
-		vel += (walkDir - vel) * .1;
+		vel += (walkDir - vel) * .1 * FT;
 
 		shouting = aimDir.Length > 25;
 		if (shouting)
@@ -70,12 +70,6 @@ class Player
 
 	void Draw(sf::Renderer@ rt)
 	{
-		sf::Shapes::Circle shape(16);
-		shape.Origin = Vec2(16, 16);
-		shape.Position = pos;
-
-		rt.Draw(shape);
-
 		if (shouting)
 		{
 			wepon.String = msg;
@@ -86,6 +80,10 @@ class Player
 
 			rt.Draw(wepon);
 		}
+
+		sf::View gameView = rt.View;
+		gameView.Center = gameView.Center + (pos - gameView.Center) * .001 * FT;
+		rt.View = gameView;
 	}
 
 	void DrawUI(sf::Renderer@ rt)
