@@ -240,8 +240,8 @@ void ScriptManager::notifyNewObject(ScriptObject* obj)
 
 void ScriptManager::notifyObjectRemoved(ScriptObject* obj)
 {
-	auto it = std::find(mObjects.cbegin(), mObjects.cend(), obj);
-	if (it != mObjects.cend())
+	auto it = std::find(mObjects.begin(), mObjects.end(), obj);
+	if (it != mObjects.end())
 		mObjects.erase(it);
 }
 

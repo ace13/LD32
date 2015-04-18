@@ -44,7 +44,7 @@ void AS_SFML::priv::view(asIScriptEngine* eng)
 	r = eng->RegisterObjectBehaviour("View", asBEHAVE_CONSTRUCT, "void f(::Vec2&in center, ::Vec2&in size)", asFUNCTION(create_view_vals), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("View", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_view), asCALL_CDECL_OBJFIRST); asAssert(r);
 
-	r = eng->RegisterObjectMethod("View", "View& opAssign(View&in)", asMETHOD(sf::View, operator=), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("View", "View& opAssign(View&in)", asMETHODPR(sf::View, operator=, (const sf::View&), sf::View&), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectMethod("View", "::Vec2& get_Center() const", asMETHOD(sf::View, getCenter), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("View", "float get_Rotation() const", asMETHOD(sf::View, getRotation), asCALL_THISCALL); asAssert(r);

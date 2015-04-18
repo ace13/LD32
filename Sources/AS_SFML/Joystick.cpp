@@ -70,7 +70,7 @@ void AS_SFML::priv::joystick(asIScriptEngine* eng)
 
 	r = eng->SetDefaultNamespace("sf::Joystick"); asAssert(r);
 
-#define RegEnumValue(value) eng->RegisterEnumValue("Axis", #value, sf::Joystick:: ## value)
+#define RegEnumValue(value) eng->RegisterEnumValue("Axis", #value, sf::Joystick:: value)
 	r = eng->RegisterEnum("Axis"); asAssert(r);
 	r = RegEnumValue(X); asAssert(r);
 	r = RegEnumValue(Y); asAssert(r);

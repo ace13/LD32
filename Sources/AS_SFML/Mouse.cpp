@@ -21,7 +21,7 @@ void AS_SFML::priv::mouse(asIScriptEngine* eng)
 
 	r = eng->SetDefaultNamespace("sf::Mouse"); asAssert(r);
 
-#define B(Val) eng->RegisterEnumValue("Button", #Val, sf::Mouse:: ## Val)
+#define B(Val) eng->RegisterEnumValue("Button", #Val, sf::Mouse:: Val)
 	r = eng->RegisterEnum("Button"); asAssert(r);
 	r = B(Left); asAssert(r);
 	r = B(Right); asAssert(r);

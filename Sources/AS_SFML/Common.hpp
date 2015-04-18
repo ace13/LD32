@@ -3,7 +3,7 @@
 class asIScriptEngine;
 class CSerializer;
 
-#if (defined(__linux__) && (defined(_M_X64) || defined(__amd64__)))
+#if !(defined(__linux__) && (defined(_M_X64) || defined(__amd64__)))
 #define AS_SUPPORT_VALRET
 #endif
 
@@ -12,7 +12,7 @@ class CSerializer;
 namespace AS_SFML
 {
 
-	extern bool addSFMLExtensions(asIScriptEngine* engine);
-	extern bool addSFMLSerializers(CSerializer* serializer);
+	bool addSFMLExtensions(asIScriptEngine* engine);
+	bool addSFMLSerializers(CSerializer* serializer);
 
 }

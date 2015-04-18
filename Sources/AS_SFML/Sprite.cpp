@@ -45,7 +45,7 @@ void AS_SFML::priv::sprite(asIScriptEngine* eng)
 	r = eng->RegisterObjectBehaviour("Sprite", asBEHAVE_CONSTRUCT, "void f(Texture@, ::Rect&in = ::Rect())", asFUNCTION(create_sprite), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Sprite", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_sprite), asCALL_CDECL_OBJFIRST); asAssert(r);
 
-	r = eng->RegisterObjectMethod("Sprite", "Sprite& opAssign(Sprite&in)", asMETHOD(sf::Sprite, operator=), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Sprite", "Sprite& opAssign(Sprite&in)", asMETHODPR(sf::Sprite, operator=, (const sf::Sprite&), sf::Sprite&), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectMethod("Sprite", "const Texture@ GetTexture() const", asMETHOD(sf::Sprite, getTexture), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Sprite", "void SetTexture(const Texture@ texture, bool reset = false)", asMETHOD(sf::Sprite, setTexture), asCALL_THISCALL); asAssert(r);

@@ -16,11 +16,11 @@ void mapCoords(asIScriptGeneric* gen)
 #else
 Math::Vec2 mapPixel(sf::RenderTarget& target, const Math::Vec2& point)
 {
-	return target->mapPixelToCoords((sf::Vector2i)point);
+	return target.mapPixelToCoords((sf::Vector2i)point);
 }
 Math::Vec2 mapCoords(sf::RenderTarget& target, const Math::Vec2& point)
 {
-	return target->mapCoordsToPixel(point);
+	return target.mapCoordsToPixel(point);
 }
 #endif
 

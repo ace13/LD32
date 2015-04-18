@@ -128,7 +128,7 @@ void AS_SFML::priv::shapes(asIScriptEngine* eng)
 	r = eng->RegisterObjectBehaviour("Circle", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_circle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Circle", asBEHAVE_CONSTRUCT, "void f(float radius = 0, uint points = 30)", asFUNCTION(create_circle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Circle", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_circle), asCALL_CDECL_OBJFIRST);
-	r = eng->RegisterObjectMethod("Circle", "Circle& opAssign(Circle&in)", asMETHOD(sf::CircleShape, operator=), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Circle", "Circle& opAssign(Circle&in)", asMETHODPR(sf::CircleShape, operator=, (const sf::CircleShape&), sf::CircleShape&), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Circle", "float get_Radius() const", asMETHOD(sf::CircleShape, getRadius), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Circle", "void set_Radius(float radius)", asMETHOD(sf::CircleShape, setRadius), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Circle", "void set_PointCount(uint count)", asMETHOD(sf::CircleShape, setPointCount), asCALL_THISCALL); asAssert(r);
@@ -136,14 +136,14 @@ void AS_SFML::priv::shapes(asIScriptEngine* eng)
 	r = eng->RegisterObjectBehaviour("Convex", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_convex), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Convex", asBEHAVE_CONSTRUCT, "void f(uint points = 0)", asFUNCTION(create_convex), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Convex", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_convex), asCALL_CDECL_OBJFIRST); asAssert(r);
-	r = eng->RegisterObjectMethod("Convex", "Convex& opAssign(Convex&in)", asMETHOD(sf::ConvexShape, operator=), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Convex", "Convex& opAssign(Convex&in)", asMETHODPR(sf::ConvexShape, operator=, (const sf::ConvexShape&), sf::ConvexShape&), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Convex", "void set_PointCount(uint count)", asMETHOD(sf::ConvexShape, setPointCount), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Convex", "void set_opIndex(uint id, ::Vec2&in point)", asMETHOD(sf::ConvexShape, setPoint), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectBehaviour("Rectangle", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_default_rectangle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Rectangle", asBEHAVE_CONSTRUCT, "void f(::Vec2&in size = ::Vec2())", asFUNCTION(create_rectangle), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Rectangle", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_rectangle), asCALL_CDECL_OBJFIRST); asAssert(r);
-	r = eng->RegisterObjectMethod("Rectangle", "Rectangle& opAssign(Rectangle&in)", asMETHOD(sf::RectangleShape, operator=), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Rectangle", "Rectangle& opAssign(Rectangle&in)", asMETHODPR(sf::RectangleShape, operator=, (const sf::RectangleShape&), sf::RectangleShape&), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Rectangle", "const ::Vec2& get_Size()", asMETHOD(sf::RectangleShape, getSize), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Rectangle", "void set_Size(::Vec2&in size)", asMETHOD(sf::RectangleShape, setSize), asCALL_THISCALL); asAssert(r);
 

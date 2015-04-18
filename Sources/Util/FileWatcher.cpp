@@ -22,15 +22,6 @@ namespace
 #elif __linux__
 	const char separator = '/';
 #endif
-
-#ifdef __linux__
-	struct WatcherFind
-	{
-		int Handle;
-
-		bool operator()(const WatcherData& b) { return Handle == b.Handle; }
-};
-#endif
 }
 
 struct FileWatcher::WatcherData
@@ -46,6 +37,15 @@ struct FileWatcher::WatcherData
 #pragma message("No file change checking on OS X, sorry.")
 #endif
 };
+
+#ifdef __linux__
+struct FileWatcher::WatcherFind
+{
+	int Handle;
+
+	bool operator()(const FileWatcher::WatcherData* b) { return Handle == b->Handle; }
+};
+#endif
 
 FileWatcher::FileWatcher(const std::string& folder, bool recursive):
 	mFolder(folder), mRecursive(recursive)
@@ -156,12 +156,14 @@ void FileWatcher::tick()
 		while (i < ret)
 		{
 			inotify_event* ev = (inotify_event*)&buffer[i];
-			WatcherFind find = { .Handle = ev->wd };
+			WatcherFind find;
+            find.Handle = ev->wd;
+
 			auto it = std::find_if(mWatches.cbegin(), mWatches.cend(), find);
 
 			if (ev->len > 0 && it != mWatches.cend())
 			{
-				std::string path = it->directory + '/' + ev->name;
+				std::string path = (*it)->Folder + '/' + ev->name;
 				if (std::find(mChanges.cbegin(), mChanges.cend(), path) == mChanges.cend())
 					mChanges.push_back(path);
 			}
@@ -185,7 +187,7 @@ void FileWatcher::startWatch()
 	std::memset(data->Buffer, 0, sizeof(data->Buffer));
 #elif defined __linux__
 	int flags = IN_ATTRIB | IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO;
-	data->handle = inotify_add_watch(mInotify, mFolder.c_str(), flags);
+	data->Handle = inotify_add_watch(mInotify, mFolder.c_str(), flags);
 #endif
 
 	mWatches.push_back(data);

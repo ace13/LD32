@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.hpp"
+#include <SFML/System/Vector2.hpp>
 #include <angelscript.h>
 #include <serializer/serializer.h>
 #include <cassert>

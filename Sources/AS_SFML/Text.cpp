@@ -82,7 +82,7 @@ void AS_SFML::priv::text(asIScriptEngine* eng)
 	r = eng->RegisterObjectBehaviour("Text", asBEHAVE_CONSTRUCT, "void f(::string&in text, uint charsize = 30)", asFUNCTION(create_text), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Text", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_text), asCALL_CDECL_OBJFIRST); asAssert(r);
 
-	r = eng->RegisterObjectMethod("Text", "Text& opAssign(Text&in)", asMETHOD(sf::Text, operator=), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Text", "Text& opAssign(Text&in)", asMETHODPR(sf::Text, operator=, (const sf::Text&), sf::Text&), asCALL_THISCALL); asAssert(r);
 	
 	r = eng->RegisterObjectMethod("Text", "uint get_CharacterSize() const", asMETHOD(sf::Text, getCharacterSize), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Text", "void set_CharacterSize(uint size)", asMETHOD(sf::Text, setCharacterSize), asCALL_THISCALL); asAssert(r);

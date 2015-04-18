@@ -7,7 +7,7 @@ void AS_SFML::priv::keyboard(asIScriptEngine* eng)
 
 	r = eng->SetDefaultNamespace("sf::Keyboard"); asAssert(r);
 
-#define K(VAL) r = eng->RegisterEnumValue("Key", #VAL, sf::Keyboard:: ## VAL); asAssert(r);
+#define K(VAL) r = eng->RegisterEnumValue("Key", #VAL, sf::Keyboard:: VAL); asAssert(r);
 	r = eng->RegisterEnum("Key");
 	K(A); K(B); K(C); K(D); K(E); K(F); K(G); K(H); K(I); K(J); K(K); K(L); K(M); K(N);
 	K(O); K(P); K(Q); K(R); K(S); K(T); K(U); K(V); K(W); K(X); K(Y); K(Z); K(Num0);

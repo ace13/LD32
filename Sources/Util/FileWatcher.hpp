@@ -36,6 +36,7 @@ namespace Util
 		
 #ifdef __linux__
 		int mInotify;
+        struct WatcherFind;
 #endif
 	};
 
