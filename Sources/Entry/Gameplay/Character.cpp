@@ -91,6 +91,7 @@ void Character::addScript(asIScriptEngine* eng)
 	eng->RegisterObjectMethod("Character", "float get_Radius() const", asMETHOD(Character, getRadius), asCALL_THISCALL);
 	eng->RegisterObjectMethod("Character", "void set_Radius(float) const", asMETHOD(Character, setRadius), asCALL_THISCALL);
 
+	eng->RegisterObjectMethod("Character", "void Damage(float, Vec2&in)", asMETHOD(Character, damage), asCALL_THISCALL);
 	eng->RegisterObjectMethod("Character", "void Kill()", asMETHOD(Character, kill), asCALL_THISCALL);
 
 #ifdef AS_SUPPORT_VALRET
@@ -120,6 +121,24 @@ void Character::addedToEntity()
 	requestMessage("GetRadius", &Character::getRadiusMsg , true);
 
 	requestMessage("Game.Draw", &Character::draw);
+}
+
+void Character::damage(float dmg, const Math::Vec2& dir)
+{
+	if (mSanity > 0)
+	{
+		float dmgC = dmg;
+		dmg -= mSanity;
+		mSanity -= dmgC;
+	}
+
+	if (dmg > 0)
+		mHealth -= dmg;
+
+	mPosition += dir * mRadius * 0.5;
+
+	if (mHealth < 0)
+		kill();
 }
 
 void Character::kill()
@@ -176,6 +195,18 @@ void Character::draw(sf::RenderTarget& target)
 	sf::CircleShape shape(16);
 	shape.setOrigin(16, 16);
 	shape.setPosition(mPosition);
+
+	uint8_t r = 255;
+	uint8_t gb = 255;
+
+	if (mSanity < 1)
+		gb *= mSanity;
+	if (mHealth < 1)
+		r *= mHealth;
+
+	shape.setFillColor(sf::Color(r, gb, gb, 255));
+	shape.setOutlineColor(sf::Color::White);
+	shape.setOutlineThickness(1);
 
 	target.draw(shape);
 }

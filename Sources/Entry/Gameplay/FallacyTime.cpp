@@ -3,7 +3,7 @@
 #include <SFML/Window/Event.hpp>
 #include <climits>
 
-const float FallacyTimeController::FALLACY_TIME = 0.25;
+const float FallacyTimeController::FALLACY_TIME = 0.5;
 float FallacyTimeController::FallacyTime = 1;
 
 FallacyTimeController::FallacyTimeController() : Kunlaboro::Component("Fallacy.Time"),

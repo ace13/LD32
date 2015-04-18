@@ -10,6 +10,7 @@ std::string TDs[] = {
 	"TD", "TD",
 
 	"Tasty Doughnuts",
+	"Text Denied",
 	"They're Delicious",
 	"They're Depressing",
 	"Though... Damn",

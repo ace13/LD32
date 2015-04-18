@@ -4,7 +4,8 @@ class Strawman : IWeapon
 
 	Strawman()
 	{
-
+		shout.SetBuf(Resources::GetSound("shouting.ogg"));
+		shout.Looping = true;
 	}
 
 	string Name { get const { return "Strawman"; } }
@@ -18,10 +19,16 @@ class Strawman : IWeapon
 			if (isFiring)
 			{
 				@owner = GetCharacter();
-				msg = "YOUR AND IDIOT KILL YOU'RE SELVE ";
+				msg = "YOUR AND IDIOT KILL YOU'RE SELVES ";
+
+				shout.Play();
 			}
+			else
+				shout.Pause();
 		}
 	}
+
+	private sf::Sound shout;
 
 	private float time;
 	private bool isFiring;
@@ -33,6 +40,8 @@ class Strawman : IWeapon
 	{
 		if (!isFiring)
 			return;
+
+		shout.Pitch = FT;
 
 		float ang = owner.AimVec.Angle;
 		if (ang < -HALF_PI || ang > HALF_PI)
@@ -50,9 +59,16 @@ class Strawman : IWeapon
 			msg = c + msg.substr(0, msg.length - 1);
 		}
 
-		if (int(time * 40) % 40 == 0 && oldTime % 40 != 0)
+		if (int(time * 40) % 20 == 0 && oldTime % 20 != 0)
 		{
-			// array<Character@>@ targets = FindInLine();
+			array<Character@>@ targets = FindInLine(owner.Position, owner.AimVec, 1024);
+
+			for (uint i = 0; i < targets.length; ++i)
+			{
+				Character@ target = @targets[i];
+
+				target.Damage(0.25, owner.AimVec);
+			}
 		}
 	}
 

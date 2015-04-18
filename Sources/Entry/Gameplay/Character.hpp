@@ -30,6 +30,7 @@ namespace Gameplay
 		float getSanity() const;
 		void setRadius(float rad);
 
+		void damage(float dmg, const Math::Vec2& dir);
 		void kill();
 
 		static void addScript(asIScriptEngine* eng);

@@ -72,6 +72,8 @@ add_subdirectory(Sources)
 
 set(DATA
 	Scripts
+
+	Resources/shouting.ogg
 )
 
 FILE(COPY ${DATA} DESTINATION ${OUTPUT_BINDIR})
