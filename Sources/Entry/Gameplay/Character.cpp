@@ -23,7 +23,8 @@ void Character::addScript(asIScriptEngine* eng)
 	eng->RegisterGlobalFunction("void UpdateCharacter(Vec2&in,float)", asFUNCTION(update), asCALL_CDECL);
 }
 
-Character::Character() : Kunlaboro::Component("Fallacy.Character")
+Character::Character() : Kunlaboro::Component("Fallacy.Character"),
+	mRadius(0), mHealth(1), mSanity(1), mMaxSanity(1)
 {
 
 }
@@ -35,9 +36,9 @@ Character::~Character()
 void Character::addedToEntity()
 {
 	requestMessage("SetPosition", &Character::setPosition, true);
-	requestMessage("GetPosition", (Kunlaboro::Optional<Math::Vec2>(Character::*)())&Character::getPosition, true);
+	requestMessage("GetPosition", &Character::getPositionMsg, true);
 	requestMessage("SetRadius", &Character::setRadius, true);
-	requestMessage("GetRadius", (Kunlaboro::Optional<float>(Character::*)())&Character::getRadius, true);
+	requestMessage("GetRadius", &Character::getRadiusMsg , true);
 
 	requestMessage("Game.Draw", &Character::draw);
 }
@@ -71,12 +72,12 @@ void Character::draw(sf::RenderTarget& target)
 	target.draw(shape);
 }
 
-Kunlaboro::Optional<Math::Vec2> Character::getPosition()
+Kunlaboro::Optional<Math::Vec2> Character::getPositionMsg()
 {
 	return mPosition;
 }
 
-Kunlaboro::Optional<float> Character::getRadius()
+Kunlaboro::Optional<float> Character::getRadiusMsg()
 {
 	return mRadius;
 }

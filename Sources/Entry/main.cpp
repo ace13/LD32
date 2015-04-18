@@ -1,4 +1,5 @@
 #include "Gameplay/Character.hpp"
+#include "Gameplay/Enemy.hpp"
 #include "Gameplay/FallacyTime.hpp"
 #include "Gameplay/GameState.hpp"
 #include "Menu.hpp"
@@ -17,9 +18,14 @@ int main(int argc, char** argv)
 
 	Kunlaboro::EntitySystem es;
 	es.registerComponent<Gameplay::Character>("Fallacy.Character");
+	es.registerComponent<Gameplay::Enemy>("Fallacy.Enemy");
 	es.registerComponent<Gameplay::GameState>("Fallacy.GameState");
 	es.registerComponent<Menu>("Fallacy.Menu");
 	es.registerComponent<FallacyTimeController>("Fallacy.Time");
+
+	es.registerTemplate("Fallacy.Enemy", std::vector<std::string> { "Fallacy.Character", "Fallacy.Enemy" });
+
+
 	GameClass game(es);
 	auto& sm = Game::ScriptManager::Singleton();
 

@@ -26,8 +26,8 @@ namespace Gameplay
 		
 	private:
 		void draw(sf::RenderTarget& rt);
-		Kunlaboro::Optional<Math::Vec2> getPosition();
-		Kunlaboro::Optional<float> getRadius();
+		Kunlaboro::Optional<Math::Vec2> getPositionMsg();
+		Kunlaboro::Optional<float> getRadiusMsg();
 
 		float mRadius, mHealth, mSanity, mMaxSanity;
 		Math::Vec2 mPosition;
