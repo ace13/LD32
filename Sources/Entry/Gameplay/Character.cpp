@@ -1,4 +1,5 @@
 #include "Character.hpp"
+#include "FallacyTime.hpp"
 #include <Game/ScriptObject.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -34,7 +35,7 @@ namespace
 		return ret;
 	}
 
-	CScriptArray* findInLine(const Math::Vec2& pos, const Math::Vec2& dir, float radius)
+	CScriptArray* findInLine(const Math::Vec2& pos, const Math::Vec2& dir, float radius, float lineThickness)
 	{
 		std::list<Character*> list;
 
@@ -52,7 +53,7 @@ namespace
 			auto dirCopy = dir;
 			auto diff = (val->getPosition() - pos);
 			dirCopy.setLength(diff.getLength());
-			if (diff.getDistance(dirCopy) < val->getRadius() && diff.getLength() < radius)
+			if (diff.getDistance(dirCopy) < val->getRadius() + lineThickness && diff.getLength() < radius)
 				ret->InsertLast(&val);
 		}
 
@@ -73,8 +74,9 @@ namespace
 		Math::Vec2* v = reinterpret_cast<Math::Vec2*>(gen->GetArgObject(0));
 		Math::Vec2* v2 = reinterpret_cast<Math::Vec2*>(gen->GetArgObject(1));
 		float rad = gen->GetArgFloat(2);
+		float lineThick = gen->GetArgFloat(3);
 
-		gen->SetReturnObject(findInLine(*v, *v2, rad));
+		gen->SetReturnObject(findInLine(*v, *v2, rad, lineThick));
 	}
 #endif
 
@@ -99,7 +101,7 @@ void Character::addScript(asIScriptEngine* eng)
 
 #ifdef AS_SUPPORT_VALRET
 	eng->RegisterGlobalFunction("array<Character@>@ FindInRadius(Vec2&in, float)", asFUNCTION(findInRadius), asCALL_CDECL);
-	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float)", asFUNCTION(findInLine), asCALL_CDECL);
+	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float, float = 0)", asFUNCTION(findInLine), asCALL_CDECL);
 #else
 	eng->RegisterGlobalFunction("array<Character@>@ FindInRadius(Vec2&in, float)", asFUNCTION(findInRadius_generic), asCALL_GENERIC);
 	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float)", asFUNCTION(findInLine_generic), asCALL_GENERIC);
@@ -107,7 +109,7 @@ void Character::addScript(asIScriptEngine* eng)
 }
 
 Character::Character() : Kunlaboro::Component("Fallacy.Character"),
-	mRadius(0), mHealth(1), mSanity(1), mMaxSanity(1)
+	mRadius(0), mHealth(10), mSanity(10), mMaxSanity(10)
 {
 
 }
@@ -124,6 +126,7 @@ void Character::addedToEntity()
 	requestMessage("GetRadius", &Character::getRadiusMsg , true);
 
 	requestMessage("Game.Draw", &Character::draw);
+	requestMessage("Game.Tick", &Character::tick);
 }
 
 void Character::damage(float dmg, const Math::Vec2& dir)
@@ -133,12 +136,15 @@ void Character::damage(float dmg, const Math::Vec2& dir)
 		float dmgC = dmg;
 		dmg -= mSanity;
 		mSanity -= dmgC;
+
+		if (mSanity < 0)
+			mSanity = 0;
 	}
 
 	if (dmg > 0)
 		mHealth -= dmg;
 
-	mPosition += dir * mRadius * 0.5;
+	mPosition += dir.getRotated(Math::randomFloat(-Math::HALF_PI / 2, Math::HALF_PI / 2)) * mRadius;
 
 	if (mHealth < 0)
 		kill();
@@ -199,19 +205,27 @@ void Character::draw(sf::RenderTarget& target)
 	shape.setOrigin(16, 16);
 	shape.setPosition(mPosition);
 
-	uint8_t r = 255;
+	uint8_t a = 255;
 	uint8_t gb = 255;
 
-	if (mSanity < 1)
-		gb *= mSanity;
-	if (mHealth < 1)
-		r *= mHealth;
+	if (mSanity < mMaxSanity)
+		gb *= (mSanity / mMaxSanity);
+	if (mHealth < 10)
+		a *= (mHealth / 10.0);
 
-	shape.setFillColor(sf::Color(r, gb, gb, 255));
+	shape.setFillColor(sf::Color(255, gb, gb, a));
 	shape.setOutlineColor(sf::Color::White);
 	shape.setOutlineThickness(1);
 
 	target.draw(shape);
+}
+
+void Character::tick(const Util::Timespan& dt)
+{
+	if (mSanity < mMaxSanity)
+	{
+		mSanity += std::min(mMaxSanity, std::chrono::duration<float>(dt).count() * FallacyTimeController::FallacyTime);
+	}
 }
 
 Kunlaboro::Optional<Math::Vec2> Character::getPositionMsg()

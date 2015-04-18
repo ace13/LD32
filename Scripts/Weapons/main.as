@@ -59,15 +59,15 @@ class Strawman : IWeapon
 			msg = c + msg.substr(0, msg.length - 1);
 		}
 
-		if (int(time * 40) % 20 == 0 && oldTime % 20 != 0)
+		if (int(time * 40) % 10 == 0 && oldTime % 10 != 0)
 		{
-			array<Character@>@ targets = FindInLine(owner.Position, owner.AimVec, 1024);
+			array<Character@>@ targets = FindInLine(owner.Position, owner.AimVec, 512, 8);
 
 			for (uint i = 0; i < targets.length; ++i)
 			{
 				Character@ target = @targets[i];
 
-				target.Damage(0.25, owner.AimVec);
+				target.Damage(1.5, owner.AimVec);
 			}
 		}
 	}
