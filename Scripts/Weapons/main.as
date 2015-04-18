@@ -61,7 +61,7 @@ class Strawman : IWeapon
 
 		if (int(time * 40) % 10 == 0 && oldTime % 10 != 0)
 		{
-			array<Character@>@ targets = FindInLine(owner.Position, owner.AimVec, 512, 8);
+			array<Character@>@ targets = FindInLine(owner.Position, owner.AimVec, 512.f, 8.f);
 
 			for (uint i = 0; i < targets.length; ++i)
 			{
