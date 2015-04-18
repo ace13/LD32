@@ -5,6 +5,8 @@
 
 class asIScriptEngine;
 
+namespace sf { class RenderTarget; }
+
 namespace Gameplay
 {
 	class Character : public Kunlaboro::Component
@@ -23,6 +25,7 @@ namespace Gameplay
 		static void addScript(asIScriptEngine* eng);
 		
 	private:
+		void draw(sf::RenderTarget& rt);
 		Kunlaboro::Optional<Math::Vec2> getPosition();
 		Kunlaboro::Optional<float> getRadius();
 

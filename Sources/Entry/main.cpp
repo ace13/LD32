@@ -1,5 +1,6 @@
 #include "Gameplay/Character.hpp"
 #include "Gameplay/FallacyTime.hpp"
+#include "Gameplay/GameState.hpp"
 #include "Menu.hpp"
 #include "Resources.hpp"
 
@@ -16,6 +17,7 @@ int main(int argc, char** argv)
 
 	Kunlaboro::EntitySystem es;
 	es.registerComponent<Gameplay::Character>("Fallacy.Character");
+	es.registerComponent<Gameplay::GameState>("Fallacy.GameState");
 	es.registerComponent<Menu>("Fallacy.Menu");
 	es.registerComponent<FallacyTimeController>("Fallacy.Time");
 	GameClass game(es);
@@ -56,6 +58,8 @@ int main(int argc, char** argv)
 	es.addComponent(eid, "Game.Statistics");
 	es.addComponent(eid, "Game.AspectHolder");
 	es.addComponent(eid, "Fallacy.Time");
+
+	es.addComponent(eid, "Fallacy.GameState");
 
 	eid = es.createEntity();
 	es.addComponent(eid, sm.createObject("Scripts/player.as", "Player", es));

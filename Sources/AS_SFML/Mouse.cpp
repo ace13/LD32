@@ -11,7 +11,7 @@ void getMousePos(asIScriptGeneric* gen)
 #else
 Math::Vec2 getMousePos()
 {
-	return sf::Mouse::getPosition(GameClass::Singleton().getWindow());
+	return GameClass::Singleton().getWindow().mapPixelToCoords(sf::Mouse::getPosition(GameClass::Singleton().getWindow()));
 }
 #endif
 

@@ -1,5 +1,7 @@
 #include "Character.hpp"
 #include <Game/ScriptObject.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <angelscript.h>
 
 using namespace Gameplay;
@@ -36,6 +38,8 @@ void Character::addedToEntity()
 	requestMessage("GetPosition", (Kunlaboro::Optional<Math::Vec2>(Character::*)())&Character::getPosition, true);
 	requestMessage("SetRadius", &Character::setRadius, true);
 	requestMessage("GetRadius", (Kunlaboro::Optional<float>(Character::*)())&Character::getRadius, true);
+
+	requestMessage("Game.Draw", &Character::draw);
 }
 
 float Character::getRadius() const
@@ -56,6 +60,15 @@ const Math::Vec2& Character::getPosition() const
 void Character::setPosition(const Math::Vec2& pos)
 {
 	mPosition = pos;
+}
+
+void Character::draw(sf::RenderTarget& target)
+{
+	sf::CircleShape shape(16);
+	shape.setOrigin(16, 16);
+	shape.setPosition(mPosition);
+
+	target.draw(shape);
 }
 
 Kunlaboro::Optional<Math::Vec2> Character::getPosition()

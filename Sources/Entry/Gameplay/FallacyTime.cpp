@@ -29,6 +29,11 @@ void FallacyTimeController::event(const sf::Event& ev)
 		slowDown();
 	else if (ev.type == sf::Event::KeyReleased && ev.key.code == sf::Keyboard::LControl)
 		speedUp();
+
+	if (ev.type == sf::Event::JoystickButtonPressed && ev.joystickButton.button == 0)
+		slowDown();
+	else if (ev.type == sf::Event::JoystickButtonReleased && ev.joystickButton.button == 0)
+		speedUp();
 }
 
 void FallacyTimeController::tick(const Util::Timespan& dt)
