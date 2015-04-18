@@ -3,11 +3,11 @@
 #include <SFML/Window/Event.hpp>
 #include <climits>
 
+const float FallacyTimeController::FALLACY_TIME = 0.25;
 float FallacyTimeController::FallacyTime = 1;
 
 FallacyTimeController::FallacyTimeController() : Kunlaboro::Component("Fallacy.Time"),
-	mEaser(&Math::Eases::easeInCubic<float>, 0.5), mCurState(State_FullSpeed),
-	FALLACY_TIME(0.25)
+	mEaser(&Math::Eases::easeInCubic<float>, 0.5), mCurState(State_FullSpeed)
 {
 
 }

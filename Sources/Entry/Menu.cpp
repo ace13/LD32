@@ -3,23 +3,34 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 std::string TDs[] = {
-	"TD",
-	"TD",
-	"TD",
-	"TD",
-	"TD",
+	"TD", "TD",
+	"TD", "TD",
+	"TD", "TD",
+	"TD", "TD",
+	"TD", "TD",
 
+	"Tasty Doughnuts",
+	"They're Depressing",
 	"Though... Damn",
+	"Trolling Defender",
+	"Twitchy Doctors",
 
 	"Totally Dastardly",
+	"Totally Deadened",
+	"Totally Defected",
+	"Totally Dehumanised",
 	"Totally Deranged",
 	"Totally Disgusted",
 	"Totally Disgusting",
 
 	"Tumblr Debating",
 	"Tumblr Deportees",
+	"Tumblr Dragons",
 
-	"Typically Demented"
+	"Typically Demented",
+	"Typically Depressing",
+	"Typically Deep",
+	"Typically Disgraceful"
 };
 
 Menu::Menu() : Kunlaboro::Component("Fallacy.Menu")

@@ -2,6 +2,8 @@ set(HEADERS
 	Gameplay/Character.hpp
 	Gameplay/Enemy.hpp
 	Gameplay/FallacyTime.hpp
+	Gameplay/GameState.hpp
+	Gameplay/NameGen.hpp
 
 	Menu.hpp
 	Resources.hpp
@@ -10,6 +12,8 @@ set(SOURCES
 	Gameplay/Character.cpp
 	Gameplay/Enemy.cpp
 	Gameplay/FallacyTime.cpp
+	Gameplay/GameState.cpp
+	Gameplay/NameGen.cpp
 
 	Menu.cpp
 	Resources.cpp
