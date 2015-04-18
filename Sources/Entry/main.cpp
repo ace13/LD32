@@ -1,4 +1,5 @@
-#include "FallacyTime.hpp"
+#include "Gameplay/Character.hpp"
+#include "Gameplay/FallacyTime.hpp"
 #include "Menu.hpp"
 #include "Resources.hpp"
 
@@ -14,6 +15,7 @@ int main(int argc, char** argv)
 	Util::setSaneCWD();
 
 	Kunlaboro::EntitySystem es;
+	es.registerComponent<Gameplay::Character>("Fallacy.Character");
 	es.registerComponent<Menu>("Fallacy.Menu");
 	es.registerComponent<FallacyTimeController>("Fallacy.Time");
 	GameClass game(es);
@@ -37,6 +39,7 @@ int main(int argc, char** argv)
 	}
 
 	auto eng = sm.getEngine();
+	Gameplay::Character::addScript(eng);
 	eng->RegisterGlobalProperty("const float TIME_LEFT", &timeLeft);
 	eng->RegisterGlobalProperty("const float FT", &FallacyTimeController::FallacyTime);
 
@@ -45,10 +48,9 @@ int main(int argc, char** argv)
 	eng->RegisterGlobalFunction("sf::Music@ GetMusic(string&in)", asFUNCTION(Resources::getMusic), asCALL_CDECL);
 	eng->SetDefaultNamespace("");
 
-	GameClass::RegisterComponents(es);
 
-	sm.loadScriptFromFile("Scripts/main.as");
-	sm.loadScriptFromFile("Scripts/clock.as");
+
+	GameClass::RegisterComponents(es);
 
 	auto eid = es.createEntity();
 	es.addComponent(eid, "Game.Statistics");
@@ -56,10 +58,12 @@ int main(int argc, char** argv)
 	es.addComponent(eid, "Fallacy.Time");
 
 	eid = es.createEntity();
-	auto obj = sm.createObject("Scripts/main.as", "BouncyBall", es);
+	auto obj = sm.createObject("Scripts/main.as", "HudTest", es);
 	es.addComponent(eid, obj);
-	obj = sm.createObject("Scripts/clock.as", "Countdown", es);
-	es.addComponent(eid, obj);
+
+	eid = es.createEntity();
+	es.addComponent(eid, sm.createObject("Scripts/player.as", "Player", es));
+	es.addComponent(eid, "Fallacy.Character");
 
 	game.init();
 

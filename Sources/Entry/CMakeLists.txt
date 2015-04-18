@@ -1,15 +1,22 @@
 set(HEADERS
-	FallacyTime.hpp
+	Gameplay/Character.hpp
+	Gameplay/FallacyTime.hpp
+
 	Menu.hpp
 	Resources.hpp
 )
 set(SOURCES
-	FallacyTime.cpp
+	Gameplay/Character.cpp
+	Gameplay/FallacyTime.cpp
+
 	Menu.cpp
 	Resources.cpp
 
 	main.cpp
 )
+
+source_group("Header Files\\Gameplay" REGULAR_EXPRESSION "Gameplay/[^./]+\\.(hpp|inl)")
+source_group("Source Files\\Gameplay" REGULAR_EXPRESSION "Gameplay/[^./]+\\.cpp")
 
 add_executable(LD32_Game ${HEADERS} ${SOURCES})
 target_link_libraries(LD32_Game

@@ -89,7 +89,7 @@ void AS_SFML::priv::text(asIScriptEngine* eng)
 	r = eng->RegisterObjectMethod("Text", "const Color& get_Color() const", asMETHOD(sf::Text, getColor), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Text", "void set_Color(Color&in color)", asMETHOD(sf::Text, setColor), asCALL_THISCALL); asAssert(r);
 	r = eng->RegisterObjectMethod("Text", "uint get_Style() const", asMETHOD(sf::Text, getStyle), asCALL_THISCALL); asAssert(r);
-	r = eng->RegisterObjectMethod("Text", "void get_Style(uint style)", asMETHOD(sf::Text, setStyle), asCALL_THISCALL); asAssert(r);
+	r = eng->RegisterObjectMethod("Text", "void set_Style(uint style)", asMETHOD(sf::Text, setStyle), asCALL_THISCALL); asAssert(r);
 
 	r = eng->RegisterObjectMethod("Text", "void set_String(::string&in string)", asFUNCTION(text_setString), asCALL_CDECL_OBJFIRST); asAssert(r);
 #ifndef AS_SUPPORT_VALRET

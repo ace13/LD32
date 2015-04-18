@@ -100,6 +100,8 @@ ScriptManager::~ScriptManager()
 bool ScriptManager::loadScriptFromFile(const std::string& file)
 {
 	std::ifstream ifs(file.c_str());
+	if (!ifs)
+		return false;
 
 	ifs.seekg(0, std::ios::end);
 	size_t len = ifs.tellg();
@@ -217,6 +219,10 @@ void ScriptManager::checkForUpdates()
 ScriptObject* ScriptManager::createObject(const std::string& file, const std::string& name, Kunlaboro::EntitySystem& es)
 {
 	std::string path = normalizePath(file);
+	if (mLoadedScripts.count(path) == 0)
+		if (!loadScriptFromFile(path))
+			return nullptr;
+
 	auto obj = static_cast<Game::ScriptObject*>(es.createComponent("Game.ScriptObject"));
 
 	auto mod = mEngine->GetModule(path.c_str());

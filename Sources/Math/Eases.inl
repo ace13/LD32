@@ -193,7 +193,7 @@ EASE(easeInBack)
 EASE(easeOutBack)
 {
 	static float s = 1.70158f;
-	return change * ((t /= d - 1) * t * ((s + 1) * t + s) + 1) + begin;
+	return change * (((t /= d) - 1) * t * ((s + 1) * t + s) + 1) + begin;
 }
 
 EASE(easeInOutBack)
@@ -205,7 +205,7 @@ EASE(easeInOutBack)
 
 EASE(easeInBounce)
 {
-	return change - easeOutBounce(T(), change, d - t, 0) + begin;
+	return change - easeOutBounce(T(), change, d - t, d) + begin;
 }
 
 EASE(easeOutBounce)

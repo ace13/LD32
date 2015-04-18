@@ -41,7 +41,7 @@ void AS_SFML::priv::color(asIScriptEngine* eng)
 	r = eng->RegisterObjectProperty("Color", "uint8 A", asOFFSET(sf::Color, a)); asAssert(r);
 
 	r = eng->RegisterObjectBehaviour("Color", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(create_color), asCALL_CDECL_OBJFIRST); asAssert(r);
-	r = eng->RegisterObjectBehaviour("Color", asBEHAVE_CONSTRUCT, "void f(uint8 r, uint8 g, uint8 b, uint8 a)", asFUNCTION(create_color_val), asCALL_CDECL_OBJFIRST); asAssert(r);
+	r = eng->RegisterObjectBehaviour("Color", asBEHAVE_CONSTRUCT, "void f(uint8 r, uint8 g, uint8 b, uint8 a = 255)", asFUNCTION(create_color_val), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Color", asBEHAVE_CONSTRUCT, "void f(Color&in)", asFUNCTION(create_color_copy), asCALL_CDECL_OBJFIRST); asAssert(r);
 	r = eng->RegisterObjectBehaviour("Color", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(destroy_color), asCALL_CDECL_OBJFIRST); asAssert(r);
 

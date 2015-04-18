@@ -6,7 +6,7 @@
 float FallacyTimeController::FallacyTime = 1;
 
 FallacyTimeController::FallacyTimeController() : Kunlaboro::Component("Fallacy.Time"),
-	mEaser(&Math::Eases::easeInQuad<float>, 1), mCurState(State_FullSpeed)
+	mEaser(&Math::Eases::easeInCubic<float>, 0.5), mCurState(State_FullSpeed)
 {
 
 }
@@ -37,7 +37,7 @@ void FallacyTimeController::tick(const Util::Timespan& dt)
 		mTime += std::chrono::duration_cast<std::chrono::duration<float>>(dt).count();
 		FallacyTime = mEaser.ease(mStart, mTarget, mTime);
 
-		if (mTime > 1)
+		if (FallacyTime == mTarget)
 			mCurState = (mCurState == State_SpeedingUp ? State_FullSpeed : State_SlowedDown);
 	}
 }
@@ -50,7 +50,7 @@ void FallacyTimeController::slowDown()
 		mTime = 0;
 
 	mCurState = State_SlowingDown;
-	mTarget = 0.25;
+	mTarget = 0.5;
 	mStart = 1;
 }
 void FallacyTimeController::speedUp()
@@ -62,5 +62,5 @@ void FallacyTimeController::speedUp()
 
 	mCurState = State_SpeedingUp;
 	mTarget = 1;
-	mStart = 0.25;
+	mStart = 0.5;
 }
