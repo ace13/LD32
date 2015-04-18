@@ -5,36 +5,30 @@ class BouncyBall
 	{
 		time = 0;
 		shape = sf::Shapes::Circle(32);
-		shape.Origin = Vec2(32, 64);
+		shape.Origin = Vec2(32, 32);
+
+		shape.OutlineThickness = 4;
+		shape.OutlineColor = sf::Colors::Black;
 	}
 
 	void Tick(float dt)
 	{
-		time += dt;
+		time += dt * 2 * FT;
 
 		Vec2 oldPos = shape.Position;
-		shape.Position = Vec2(sf::Mouse::Position.X, view.Size.Y - abs(sin(time)) * 32 * 10);
+		shape.Position = Vec2(shape.Position.X + (sf::Mouse::Position.X - shape.Position.X) * .1 * FT, view.Size.Y - 32 - abs(sin(time)) * 32 * 10);
 
-		float dy = shape.Position.Y - oldPos.Y;
+		float delta = 1 + (shape.Position - oldPos).Length / 2 / 2 / 2 / 2 / 2 / 2;
+		shape.Scale = Vec2(delta, 1 / delta);
 
-		Vec2 oldScale = shape.Scale;
-		if (dy < 0)
-		{
-			oldScale.X = 1 + dy / -20;
-			oldScale.Y = 1;
-		}
-		else
-		{
-			oldScale.X = 1;
-			oldScale.Y = 1 + dy / 20;
-		}
-		shape.Scale = oldScale;
+		shape.Rotation = (shape.Position - oldPos).Angle * (180 / PI);
+
+		ChangePriority(Priority::Draw, 1);
 	}
 
 	void Draw(sf::Renderer@ rt)
 	{
 		view = rt.View;
-
 		rt.Draw(shape);
 	}
 
