@@ -7,8 +7,9 @@
 #include <direct.h>
 #elif __linux__
 #include <dirent.h>
-#include <limits.h>
-#include <stdlib.h>
+#include <climits>
+#include <cstdlib>
+#include <cstring>
 // Very beautiful.
 #define MAX_PATH 4096
 #else
@@ -82,7 +83,7 @@ std::list<std::string> Util::getFilesInDir(const std::string& relative)
 		if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
 			continue;
 
-		ret.push_back(repative + "/" + entry->d_name);
+		ret.push_back(relative + "/" + entry->d_name);
 	}
 
 	closedir(pDIR);
