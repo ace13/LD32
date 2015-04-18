@@ -17,6 +17,8 @@ public:
 	void addedToEntity();
 
 private:
+	const float FALLACY_TIME;
+
 	void event(const sf::Event& ev);
 	void tick(const Util::Timespan& dt);
 

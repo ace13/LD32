@@ -9,31 +9,48 @@ class Player
 
 	void Tick(float dt)
 	{
+		Vec2 walkDir, aimDir;
+
 		if (joy.Connected)
 		{
-			Vec2 axisPos = Vec2(joy.AxisPosition(sf::Joystick::Axis::X), joy.AxisPosition(sf::Joystick::Axis::Y));
-
-			if (axisPos.Length < 25)
-				axisPos = Vec2();
-
-			vel += (axisPos - vel) * .1;
-
-			axisPos = Vec2(joy.AxisPosition(sf::Joystick::Axis::R), joy.AxisPosition(sf::Joystick::Axis::U));
-			shouting = axisPos.Length > 25;
-			if (shouting)
-			{
-				wepon.Color = sf::Colors::White;
-				wepon.Rotation = axisPos.Angle * (180 / PI);
-
-				float ang = axisPos.Angle;
-				if (ang < -HALF_PI || ang > HALF_PI)
-					wepon.Scale = Vec2(1, -1);
-				else
-					wepon.Scale = Vec2(1, 1);
-			}
-			else
-				wepon.Color = sf::Colors::Transparent;
+			walkDir = Vec2(joy.AxisPosition(sf::Joystick::Axis::X), joy.AxisPosition(sf::Joystick::Axis::Y));
+			aimDir = Vec2(joy.AxisPosition(sf::Joystick::Axis::U), joy.AxisPosition(sf::Joystick::Axis::R));
 		}
+		else
+		{
+			bool w = sf::Keyboard::IsPressed(sf::Keyboard::Key::W),
+				a = sf::Keyboard::IsPressed(sf::Keyboard::Key::A),
+				s = sf::Keyboard::IsPressed(sf::Keyboard::Key::S),
+				d = sf::Keyboard::IsPressed(sf::Keyboard::Key::D);
+
+			walkDir.X = ((a ? -1 : 0) + (d ? 1 : 0)) * 100;
+			walkDir.Y = ((w ? -1 : 0) + (s ? 1 : 0)) * 100;
+
+			if (sf::Mouse::IsPressed(sf::Mouse::Button::Left))
+			{
+				aimDir = (sf::Mouse::Position - pos);
+			}
+		}
+
+		if (walkDir.Length < 25)
+			walkDir = Vec2();
+
+		vel += (walkDir - vel) * .1;
+
+		shouting = aimDir.Length > 25;
+		if (shouting)
+		{
+			wepon.Color = sf::Colors::White;
+			wepon.Rotation = aimDir.Angle * (180 / PI);
+
+			float ang = aimDir.Angle;
+			if (ang < -HALF_PI || ang > HALF_PI)
+				wepon.Scale = Vec2(1, -1);
+			else
+				wepon.Scale = Vec2(1, 1);
+		}
+		else
+			wepon.Color = sf::Colors::Transparent;
 
 		pos += vel * dt * FT;
 		UpdateCharacter(pos, 16);
@@ -42,9 +59,9 @@ class Player
 
 	void Update(float dt)
 	{
-		int oldTime = int(time * 10);
+		int oldTime = int(time * 40);
 		time += dt * FT;
-		if (int(time * 10) != oldTime)
+		if (int(time * 40) != oldTime)
 		{
 			string c = msg.substr(msg.length - 1, 1);
 			msg = c + msg.substr(0, msg.length - 1);

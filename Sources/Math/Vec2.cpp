@@ -8,7 +8,7 @@ namespace
 {
 	inline float Angle(const Vec2& vec)
 	{
-		return std::atan2(vec.x, vec.y);
+		return std::atan2(vec.y, vec.x);
 	}
 	inline float Dot(const Vec2& v1, const Vec2& v2)
 	{

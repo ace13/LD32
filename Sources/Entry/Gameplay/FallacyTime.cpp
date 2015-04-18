@@ -6,7 +6,8 @@
 float FallacyTimeController::FallacyTime = 1;
 
 FallacyTimeController::FallacyTimeController() : Kunlaboro::Component("Fallacy.Time"),
-	mEaser(&Math::Eases::easeInCubic<float>, 0.5), mCurState(State_FullSpeed)
+	mEaser(&Math::Eases::easeInCubic<float>, 0.5), mCurState(State_FullSpeed),
+	FALLACY_TIME(0.25)
 {
 
 }
@@ -50,7 +51,7 @@ void FallacyTimeController::slowDown()
 		mTime = 0;
 
 	mCurState = State_SlowingDown;
-	mTarget = 0.5;
+	mTarget = FALLACY_TIME;
 	mStart = 1;
 }
 void FallacyTimeController::speedUp()
@@ -62,5 +63,5 @@ void FallacyTimeController::speedUp()
 
 	mCurState = State_SpeedingUp;
 	mTarget = 1;
-	mStart = 0.5;
+	mStart = FALLACY_TIME;
 }
