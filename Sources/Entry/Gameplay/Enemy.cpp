@@ -19,6 +19,7 @@ void Enemy::addedToEntity()
 		if (msg == Kunlaboro::Type_Create)
 		{
 			mChar = static_cast<Character*>(comp);
+			mChar->setRadius(16);
 			requestMessage("Game.Tick", &Enemy::tick);
 		}
 		else if (msg == Kunlaboro::Type_Destroy)

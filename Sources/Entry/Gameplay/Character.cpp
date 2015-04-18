@@ -28,10 +28,33 @@ namespace
 
 		auto ret = CScriptArray::Create(obj->GetEngine()->GetObjectTypeByDecl("array<Character@>"));
 		for (auto& val : list)
+			if (val->getPosition().getDistance(pos) < radius)
 			ret->InsertLast(val);
 
 		return ret;
 	}
+
+	CScriptArray* findInLine(const Math::Vec2& pos, const Math::Vec2& dir, float radius)
+	{
+		std::list<Character*> list;
+
+		asIScriptObject* obj = reinterpret_cast<asIScriptObject*>(asGetActiveContext()->GetThisPointer());
+		Kunlaboro::Component* sobj = reinterpret_cast<Kunlaboro::Component*>(obj->GetObjectType()->GetUserData((uintptr_t)obj));
+
+		sobj->sendGlobalMessage<void, std::list<Character*>&>("Fallacy.GetEnemies", list);
+
+		auto ret = CScriptArray::Create(obj->GetEngine()->GetObjectTypeByDecl("array<Character@>"));
+		for (auto& val : list)
+		{
+			auto dirCopy = dir;
+			auto diff = (val->getPosition() - pos);
+			dirCopy.setLength(diff.getLength());
+			if (diff.getDistance(dirCopy) < val->getRadius() && diff.getLength() < radius)
+				ret->InsertLast(&val);
+		}
+
+		return ret;
+}
 
 #ifndef AS_SUPPORT_VALRET
 	void findInRadius_generic(asIScriptGeneric* gen)
@@ -40,6 +63,15 @@ namespace
 		float rad = gen->GetArgFloat(1);
 
 		gen->SetReturnObject(findInRadius(*v, rad));
+	}
+
+	void findInLine_generic(asIScriptGeneric* gen)
+	{
+		Math::Vec2* v = reinterpret_cast<Math::Vec2*>(gen->GetArgObject(0));
+		Math::Vec2* v2 = reinterpret_cast<Math::Vec2*>(gen->GetArgObject(1));
+		float rad = gen->GetArgFloat(2);
+
+		gen->SetReturnObject(findInLine(*v, *v2, rad));
 	}
 #endif
 
@@ -59,10 +91,14 @@ void Character::addScript(asIScriptEngine* eng)
 	eng->RegisterObjectMethod("Character", "float get_Radius() const", asMETHOD(Character, getRadius), asCALL_THISCALL);
 	eng->RegisterObjectMethod("Character", "void set_Radius(float) const", asMETHOD(Character, setRadius), asCALL_THISCALL);
 
+	eng->RegisterObjectMethod("Character", "void Kill()", asMETHOD(Character, kill), asCALL_THISCALL);
+
 #ifdef AS_SUPPORT_VALRET
 	eng->RegisterGlobalFunction("array<Character@>@ FindInRadius(Vec2&in, float)", asFUNCTION(findInRadius), asCALL_CDECL);
+	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float)", asFUNCTION(findInLine), asCALL_CDECL);
 #else
 	eng->RegisterGlobalFunction("array<Character@>@ FindInRadius(Vec2&in, float)", asFUNCTION(findInRadius_generic), asCALL_GENERIC);
+	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float)", asFUNCTION(findInLine_generic), asCALL_GENERIC);
 #endif
 }
 
@@ -84,6 +120,11 @@ void Character::addedToEntity()
 	requestMessage("GetRadius", &Character::getRadiusMsg , true);
 
 	requestMessage("Game.Draw", &Character::draw);
+}
+
+void Character::kill()
+{
+	getEntitySystem()->destroyEntity(getOwnerId());
 }
 
 float Character::getRadius() const

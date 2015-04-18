@@ -30,6 +30,8 @@ namespace Gameplay
 		float getSanity() const;
 		void setRadius(float rad);
 
+		void kill();
+
 		static void addScript(asIScriptEngine* eng);
 		
 	private:
