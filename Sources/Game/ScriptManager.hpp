@@ -28,6 +28,7 @@ namespace Game
 		bool loadScriptFromFile(const std::string& file);
 		bool loadScriptFromMemory(const std::string& file, const char* data, size_t size);
 
+		void addMetaCallback(const std::string& name, void(*callback)(asIObjectType*));
 		void defineWord(const std::string& word);
 		void checkForUpdates();
 
@@ -56,6 +57,7 @@ namespace Game
 		Util::FileWatcher mWatcher;
 		std::list<ScriptObject*> mObjects;
 		std::unordered_map<std::string, ScriptFileData> mLoadedScripts;
+		std::unordered_map<std::string, void(*)(asIObjectType*)> mMetaCallbacks;
 
 		friend class ScriptObject;
 	};

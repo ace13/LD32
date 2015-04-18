@@ -60,16 +60,6 @@ namespace
 		size_t mTellg;
 	};
 
-	std::string normalizePath(const std::string& unnormalized)
-	{
-		std::string path = unnormalized;
-
-#ifdef _WIN32
-		std::replace(path.begin(), path.end(), '/', '\\');
-#endif
-
-		return Util::getAbsolutePath(path);
-	}
 }
 
 ScriptManager* sSingleton = nullptr;
@@ -117,7 +107,7 @@ bool ScriptManager::loadScriptFromFile(const std::string& file)
 }
 bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* data, size_t size)
 {
-	std::string file = normalizePath(path);
+	std::string file = Util::getAbsolutePath(path);
 
 	bool reload = mLoadedScripts[file].DirectlyLoaded;
 	mLoadedScripts[file].Timestamp = Util::ClockImpl::now();
@@ -177,9 +167,25 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 			return false;
 
 		mLoadedScripts[file].DirectlyLoaded = true;
+
+		for (unsigned int i = 0; i < mBuilder.GetModule()->GetObjectTypeCount(); ++i)
+		{
+			auto type = mBuilder.GetModule()->GetObjectTypeByIndex(i);
+			std::string data = mBuilder.GetMetadataStringForType(type->GetTypeId());
+			if (data.empty())
+				continue;
+
+			if (mMetaCallbacks.count(data) > 0)
+				mMetaCallbacks[data](type);
+		}
 	}
 
 	return true;
+}
+
+void ScriptManager::addMetaCallback(const std::string& name, void(*callback)(asIObjectType*))
+{
+	mMetaCallbacks[name] = callback;
 }
 
 void ScriptManager::defineWord(const std::string& word)
@@ -207,7 +213,7 @@ void ScriptManager::checkForUpdates()
 	std::string file;
 	while (mWatcher.pollChange(file))
 	{
-		file = normalizePath(file);
+		file = Util::getAbsolutePath(file);
 
 		if (mLoadedScripts.count(file) == 0)
 			continue;
@@ -218,7 +224,7 @@ void ScriptManager::checkForUpdates()
 
 ScriptObject* ScriptManager::createObject(const std::string& file, const std::string& name, Kunlaboro::EntitySystem& es)
 {
-	std::string path = normalizePath(file);
+	std::string path = Util::getAbsolutePath(file);
 	if (mLoadedScripts.count(path) == 0)
 		if (!loadScriptFromFile(path))
 			return nullptr;

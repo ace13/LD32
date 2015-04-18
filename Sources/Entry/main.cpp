@@ -2,6 +2,7 @@
 #include "Gameplay/Enemy.hpp"
 #include "Gameplay/FallacyTime.hpp"
 #include "Gameplay/GameState.hpp"
+#include "Gameplay/Weapon.hpp"
 #include "Menu.hpp"
 #include "Resources.hpp"
 
@@ -11,6 +12,16 @@
 #include <Util/Path.hpp>
 
 #include <ctime>
+
+void addWeapon(asIObjectType* obj)
+{
+	Gameplay::Weapon::Manager::Singleton().addWeapon(obj->GetName(), obj);
+}
+
+void addProjectile(asIObjectType* obj)
+{
+	Gameplay::Weapon::Manager::Singleton().addProjectile(obj->GetName(), obj);
+}
 
 int main(int argc, char** argv)
 {
@@ -28,6 +39,8 @@ int main(int argc, char** argv)
 
 	GameClass game(es);
 	auto& sm = Game::ScriptManager::Singleton();
+	sm.addMetaCallback("Weapon", addWeapon);
+	sm.addMetaCallback("Projectile", addProjectile);
 
 	float timeLeft;
 	{
@@ -56,7 +69,20 @@ int main(int argc, char** argv)
 	eng->RegisterGlobalFunction("sf::Music@ GetMusic(string&in)", asFUNCTION(Resources::getMusic), asCALL_CDECL);
 	eng->SetDefaultNamespace("");
 
+	eng->RegisterEnum("WeaponType");
+	eng->RegisterEnumValue("WeaponType", "Beam", Gameplay::Weapon::Type_Beam);
+	eng->RegisterEnumValue("WeaponType", "Cone", Gameplay::Weapon::Type_Cone);
+	eng->RegisterEnumValue("WeaponType", "Projectile", Gameplay::Weapon::Type_Projectile);
 
+	eng->RegisterInterface("IWeapon");
+	eng->RegisterInterfaceMethod("IWeapon", "string get_Name() const");
+	eng->RegisterInterfaceMethod("IWeapon", "WeaponType get_Type() const");
+	eng->RegisterInterfaceMethod("IWeapon", "bool get_CanFire() const");
+	eng->RegisterInterfaceMethod("IWeapon", "bool get_Firing() const");
+	eng->RegisterInterfaceMethod("IWeapon", "void set_Firing(bool)");
+
+	for (auto& weapon : Util::getFilesInDir("Scripts/Weapons"))
+		sm.loadScriptFromFile(weapon);
 
 	GameClass::RegisterComponents(es);
 
