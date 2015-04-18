@@ -48,6 +48,8 @@ private:
 	};
 
 	Kunlaboro::Optional<asIScriptObject*> getObjectMsg();
+	Kunlaboro::Optional<bool> canFireMsg();
+	Kunlaboro::Optional<bool> isFiringMsg();
 	void updateFunc(const Util::Timespan& dt);
 	void tickFunc(const Util::Timespan& dt);
 	void drawFunc(sf::RenderTarget&);

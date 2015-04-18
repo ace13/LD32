@@ -112,11 +112,11 @@ void Character::setAimVec(const Math::Vec2& aim)
 {
 	if (aim != Math::Vec2() && mAimVec == Math::Vec2())
 	{
-		// Start firing
+		sendMessage<void>("StartFiring");
 	}
 	else if (aim == Math::Vec2() && mAimVec != Math::Vec2())
 	{
-		// Stop firing
+		sendMessage<void>("StopFiring");
 	}
 
 	mAimVec = aim;

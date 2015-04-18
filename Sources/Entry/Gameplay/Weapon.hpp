@@ -7,19 +7,28 @@
 
 #include <unordered_map>
 
+class ScriptWeapon;
+
 namespace Gameplay
 {
 
 	namespace Weapon
 	{
 
+		enum Type
+		{
+			Type_Beam,
+			Type_Cone,
+			Type_Projectile
+		};
+
 		class Manager
 		{
 		public:
 			static Manager& Singleton();
 
-			Game::ScriptObject* createProjectile(Kunlaboro::EntitySystem& es, const std::string& name);
-			Game::ScriptObject* createWeapon(Kunlaboro::EntitySystem& es, const std::string& name);
+			//ScriptWeapon* createProjectile(Kunlaboro::EntitySystem& es, const std::string& name);
+			ScriptWeapon* createWeapon(Kunlaboro::EntitySystem& es, const std::string& name);
 
 			void addProjectile(const std::string& name, asIObjectType* obj);
 			void addWeapon(const std::string& name, asIObjectType* obj);
@@ -41,13 +50,6 @@ namespace Gameplay
 			void tick(const Util::Timespan& dt);
 
 			Math::Vec2 mPosition, mVelocity;
-		};
-
-		enum Type
-		{
-			Type_Beam,
-			Type_Cone,
-			Type_Projectile
 		};
 
 	}

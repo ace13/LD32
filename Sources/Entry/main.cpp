@@ -5,6 +5,7 @@
 #include "Gameplay/Weapon.hpp"
 #include "Menu.hpp"
 #include "Resources.hpp"
+#include "ScriptWeapon.hpp"
 
 #include <GameClass.hpp>
 #include <Game/ScriptManager.hpp>
@@ -33,6 +34,7 @@ int main(int argc, char** argv)
 	es.registerComponent<Gameplay::GameState>("Fallacy.GameState");
 	es.registerComponent<Menu>("Fallacy.Menu");
 	es.registerComponent<FallacyTimeController>("Fallacy.Time");
+	es.registerComponent<ScriptWeapon>("Fallacy.ScriptWeapon");
 
 	es.registerTemplate("Fallacy.Enemy", std::vector<std::string> { "Fallacy.Character", "Fallacy.Enemy" });
 
@@ -96,6 +98,7 @@ int main(int argc, char** argv)
 	eid = es.createEntity();
 	es.addComponent(eid, sm.createObject("Scripts/player.as", "Player", es));
 	es.addComponent(eid, "Fallacy.Character");
+	es.addComponent(eid, Gameplay::Weapon::Manager::Singleton().createWeapon(es, "Strawman"));
 
 	game.init();
 

@@ -27,6 +27,9 @@ void ScriptWeapon::addedToEntity()
 	requestMessage("GetObject", &ScriptWeapon::getObjectMsg, true);
 	requestMessage("SetObject", &ScriptWeapon::setObject, true);
 
+	requestMessage("StartFiring", &ScriptWeapon::startFire, true);
+	requestMessage("StopFiring", &ScriptWeapon::stopFire, true);
+
 	if (!mObj)
 		return;
 
@@ -36,6 +39,10 @@ void ScriptWeapon::addedToEntity()
 	mFuncs[Func_DrawUI] = type->GetMethodByName("DrawUI");
 	mFuncs[Func_Tick] = type->GetMethodByName("Tick");
 	mFuncs[Func_Update] = type->GetMethodByName("Update");
+
+	mFuncs[Func_CanFire] = type->GetMethodByName("get_CanFire");
+	mFuncs[Func_GetFire] = type->GetMethodByName("get_Firing");
+	mFuncs[Func_SetFire] = type->GetMethodByName("set_Firing");
 
 	if (mFuncs[Func_Draw])
 		requestMessage("Game.Draw", &ScriptWeapon::drawFunc);
@@ -69,6 +76,26 @@ void ScriptWeapon::setObject(asIScriptObject* obj)
 	auto type = mObj->GetObjectType();
 	type->SetUserData(this, (uintptr_t)mObj);
 
+	{
+		asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
+
+		ctx->Prepare(type->GetMethodByName("get_Name"));
+		ctx->SetObject(mObj);
+
+		ctx->Execute();
+
+		mName = *reinterpret_cast<std::string*>(ctx->GetReturnObject());
+
+		ctx->Prepare(type->GetMethodByName("get_Type"));
+		ctx->SetObject(mObj);
+
+		ctx->Execute();
+
+		mType = (Gameplay::Weapon::Type)ctx->GetReturnDWord();
+
+		mObj->GetEngine()->ReturnContext(ctx);
+	}
+
 	if (getOwnerId() == 0)
 		return;
 
@@ -76,7 +103,10 @@ void ScriptWeapon::setObject(asIScriptObject* obj)
 	mFuncs[Func_DrawUI] = type->GetMethodByName("DrawUI");
 	mFuncs[Func_Tick] = type->GetMethodByName("Tick");
 	mFuncs[Func_Update] = type->GetMethodByName("Update");
-
+	mFuncs[Func_CanFire] = type->GetMethodByName("get_CanFire");
+	mFuncs[Func_GetFire] = type->GetMethodByName("get_Firing");
+	mFuncs[Func_SetFire] = type->GetMethodByName("set_Firing");
+		
 	if (mFuncs[Func_Draw])
 		requestMessage("Game.Draw", &ScriptWeapon::drawFunc);
 	if (mFuncs[Func_DrawUI])
@@ -92,9 +122,83 @@ asIScriptObject* ScriptWeapon::getObject()
 	return mObj;
 }
 
+const std::string& ScriptWeapon::getName() const
+{
+	return mName;
+}
+Gameplay::Weapon::Type ScriptWeapon::getType() const
+{
+	return mType;
+}
+
+bool ScriptWeapon::canFire() const
+{
+	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
+
+	ctx->Prepare(mFuncs[Func_CanFire]);
+	ctx->SetObject(mObj);
+
+	ctx->Execute();
+
+	bool ret = ctx->GetReturnByte();
+
+	mObj->GetEngine()->ReturnContext(ctx);
+
+	return ret;
+}
+bool ScriptWeapon::isFiring() const
+{
+	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
+
+	ctx->Prepare(mFuncs[Func_GetFire]);
+	ctx->SetObject(mObj);
+
+	ctx->Execute();
+
+	bool ret = ctx->GetReturnByte();
+
+	mObj->GetEngine()->ReturnContext(ctx);
+
+	return ret;
+}
+
+void ScriptWeapon::startFire()
+{
+	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
+
+	int r = ctx->Prepare(mFuncs[Func_SetFire]);
+	r = ctx->SetObject(mObj);
+	r = ctx->SetArgByte(0, 1);
+
+	r = ctx->Execute();
+
+	mObj->GetEngine()->ReturnContext(ctx);
+}
+void ScriptWeapon::stopFire()
+{
+	asIScriptContext* ctx = mObj->GetEngine()->RequestContext();
+
+	ctx->Prepare(mFuncs[Func_SetFire]);
+	ctx->SetObject(mObj);
+	ctx->SetArgByte(0, 0);
+
+	ctx->Execute();
+
+	mObj->GetEngine()->ReturnContext(ctx);
+}
+
+
 Kunlaboro::Optional<asIScriptObject*> ScriptWeapon::getObjectMsg()
 {
 	return mObj;
+}
+Kunlaboro::Optional<bool> ScriptWeapon::canFireMsg()
+{
+	return canFire();
+}
+Kunlaboro::Optional<bool> ScriptWeapon::isFiringMsg()
+{
+	return isFiring();
 }
 
 void ScriptWeapon::updateFunc(const Util::Timespan& dt)

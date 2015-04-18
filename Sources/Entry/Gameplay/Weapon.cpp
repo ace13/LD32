@@ -1,4 +1,5 @@
 #include "Weapon.hpp"
+#include "../ScriptWeapon.hpp"
 #include "Game/ScriptManager.hpp"
 
 using namespace Gameplay::Weapon;
@@ -10,14 +11,15 @@ Manager& Manager::Singleton()
 		man = new Manager();
 	return *man;
 }
-
+/*
 Game::ScriptObject* Manager::createProjectile(Kunlaboro::EntitySystem& es, const std::string& name)
 {
 	return nullptr;
 }
-Game::ScriptObject* Manager::createWeapon(Kunlaboro::EntitySystem& es, const std::string& name)
+*/
+ScriptWeapon* Manager::createWeapon(Kunlaboro::EntitySystem& es, const std::string& name)
 {
-	auto obj = static_cast<Game::ScriptObject*>(es.createComponent("Game.ScriptObject"));
+	auto obj = static_cast<ScriptWeapon*>(es.createComponent("Fallacy.ScriptWeapon"));
 	auto eng = Game::ScriptManager::Singleton().getEngine();
 	auto type = mWeapons[name];
 	obj->setObject(static_cast<asIScriptObject*>(eng->CreateScriptObject(type)));
