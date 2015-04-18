@@ -8,6 +8,7 @@
 class asIObjectType;
 class asIScriptFunction;
 class asIScriptObject;
+class asIScriptModule;
 
 namespace sf { class RenderTarget; }
 
@@ -47,7 +48,8 @@ private:
 		Func_COUNT
 	};
 
-	Kunlaboro::Optional<asIScriptObject*> getObjectMsg();
+	Kunlaboro::Optional<asIScriptObject*> getObjectMsg(asIScriptModule* mod);
+	void setObjectMsg(asIScriptObject* obj, asIScriptModule* mod);
 	Kunlaboro::Optional<bool> canFireMsg();
 	Kunlaboro::Optional<bool> isFiringMsg();
 	void updateFunc(const Util::Timespan& dt);

@@ -7,6 +7,7 @@
 class asIObjectType;
 class asIScriptFunction;
 class asIScriptObject;
+class asIScriptModule;
 
 namespace sf { class RenderTarget; }
 
@@ -36,7 +37,8 @@ namespace Game
 			Func_COUNT
 		};
 
-		Kunlaboro::Optional<asIScriptObject*> getObjectMsg();
+		Kunlaboro::Optional<asIScriptObject*> getObjectMsg(asIScriptModule* mod);
+		void setObjectMsg(asIScriptObject* obj, asIScriptModule* mod);
 		void updateFunc(const Util::Timespan& dt);
 		void tickFunc(const Util::Timespan& dt);
 		void drawFunc(sf::RenderTarget&);

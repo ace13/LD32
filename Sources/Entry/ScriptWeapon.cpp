@@ -25,7 +25,7 @@ ScriptWeapon::~ScriptWeapon()
 void ScriptWeapon::addedToEntity()
 {
 	requestMessage("GetObject", &ScriptWeapon::getObjectMsg, true);
-	requestMessage("SetObject", &ScriptWeapon::setObject, true);
+	requestMessage("SetObject", &ScriptWeapon::setObjectMsg, true);
 
 	requestMessage("StartFiring", &ScriptWeapon::startFire, true);
 	requestMessage("StopFiring", &ScriptWeapon::stopFire, true);
@@ -188,9 +188,17 @@ void ScriptWeapon::stopFire()
 }
 
 
-Kunlaboro::Optional<asIScriptObject*> ScriptWeapon::getObjectMsg()
+Kunlaboro::Optional<asIScriptObject*> ScriptWeapon::getObjectMsg(asIScriptModule* mod)
 {
-	return mObj;
+	if (mod == mObj->GetObjectType()->GetModule())
+		return mObj;
+	return nullptr;
+}
+
+void ScriptWeapon::setObjectMsg(asIScriptObject* obj, asIScriptModule* mod)
+{
+	if (mod == mObj->GetObjectType()->GetModule())
+		setObject(obj);
 }
 Kunlaboro::Optional<bool> ScriptWeapon::canFireMsg()
 {

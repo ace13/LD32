@@ -122,13 +122,13 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 
 		for (auto& obj : mObjects)
 		{
-			asIScriptObject* asObj;
+			//asIScriptObject* asObj;
 
-			Kunlaboro::Optional<asIScriptObject*> reply = obj->sendMessage<asIScriptObject*>("GetObject");
-			asObj = *reply;
+			Kunlaboro::Optional<asIScriptObject*> reply = obj->sendMessage<asIScriptObject*, asIScriptModule*>("GetObject", oldMod);
+			// asObj = *reply;
 
-			if (asObj->GetObjectType()->GetModule() == oldMod)
-				serial.AddExtraObjectToStore(asObj);
+			if (reply) //asObj->GetObjectType()->GetModule() == oldMod)
+				serial.AddExtraObjectToStore(*reply);
 		}
 
 		mBuilder.StartNewModule(mEngine, "::memory::");
@@ -152,14 +152,14 @@ bool ScriptManager::loadScriptFromMemory(const std::string& path, const char* da
 		serial.Restore(mod);
 		for (auto& obj : mObjects)
 		{
-			asIScriptObject* asObj;
+			//asIScriptObject* asObj;
 
-			Kunlaboro::Optional<asIScriptObject*> reply = obj->sendMessage<asIScriptObject*>("GetObject");
-			asObj = *reply;
+			Kunlaboro::Optional<asIScriptObject*> reply = obj->sendMessage<asIScriptObject*, asIScriptModule*>("GetObject", oldMod);
+			//asObj = *reply;
 
-			if (asObj->GetObjectType()->GetModule() == oldMod)
+			if (reply)//asObj->GetObjectType()->GetModule() == oldMod)
 			{
-				obj->sendMessage<void, asIScriptObject*>("SetObject", ((asIScriptObject*)serial.GetPointerToRestoredObject(asObj)));
+				obj->sendMessage<void, asIScriptObject*, asIScriptModule*>("SetObject", ((asIScriptObject*)serial.GetPointerToRestoredObject(*reply)), oldMod);
 			}
 		}
 

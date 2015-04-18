@@ -25,7 +25,7 @@ ScriptObject::~ScriptObject()
 void ScriptObject::addedToEntity()
 {
 	requestMessage("GetObject", &ScriptObject::getObjectMsg, true);
-	requestMessage("SetObject", &ScriptObject::setObject, true);
+	requestMessage("SetObject", &ScriptObject::setObjectMsg, true);
 
 	if (!mObj)
 		return;
@@ -92,9 +92,17 @@ asIScriptObject* ScriptObject::getObject()
 	return mObj;
 }
 
-Kunlaboro::Optional<asIScriptObject*> ScriptObject::getObjectMsg()
+Kunlaboro::Optional<asIScriptObject*> ScriptObject::getObjectMsg(asIScriptModule* mod)
 {
-	return mObj;
+	if (mod == mObj->GetObjectType()->GetModule())
+		return mObj;
+	return nullptr;
+}
+
+void ScriptObject::setObjectMsg(asIScriptObject* obj, asIScriptModule* mod)
+{
+	if (mod == mObj->GetObjectType()->GetModule())
+		setObject(obj);
 }
 
 void ScriptObject::updateFunc(const Util::Timespan& dt)
