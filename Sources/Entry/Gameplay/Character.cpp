@@ -104,7 +104,7 @@ void Character::addScript(asIScriptEngine* eng)
 	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float, float = 0)", asFUNCTION(findInLine), asCALL_CDECL);
 #else
 	eng->RegisterGlobalFunction("array<Character@>@ FindInRadius(Vec2&in, float)", asFUNCTION(findInRadius_generic), asCALL_GENERIC);
-	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float)", asFUNCTION(findInLine_generic), asCALL_GENERIC);
+	eng->RegisterGlobalFunction("array<Character@>@ FindInLine(Vec2&in, Vec2&in, float, float = 0)", asFUNCTION(findInLine_generic), asCALL_GENERIC);
 #endif
 }
 
